@@ -1,0 +1,15 @@
+#ifndef CBBINOM_HYPERGEO
+#define CBBINOM_HYPERGEO
+
+#include <Rcpp.h>
+using namespace Rcpp;
+
+double gen_hypergeo(NumericVector U,
+                    NumericVector L,
+                    const double& x,
+                    const double& tol,
+                    const R_xlen_t& max_iter,
+                    const bool& check_mode,
+                    const bool& log);
+
+#endif
