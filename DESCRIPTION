@@ -8,7 +8,8 @@ Description: Implementation of the d/p/q/r family of functions for a continuous 
 License: MIT + file LICENSE
 Suggests: 
     extraDistr,
-    ggplot2
+    ggplot2,
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
