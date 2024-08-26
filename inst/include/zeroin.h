@@ -30,11 +30,11 @@ inline double cpp_uniroot(			/* An estimate of the root */
   double a,b,c, fc;			/* Abscissae, descr. see above,  f(c) */
   double tol;
   int maxit;
-  
+
   a = ax;  b = bx;
   c = a;   fc = fa;
   maxit = *Maxit + 1; tol = * Tol;
-  
+
   /* First test if we have found a root at an endpoint */
   if(fa == 0.0) {
     *Tol = 0.0;
@@ -46,7 +46,7 @@ inline double cpp_uniroot(			/* An estimate of the root */
     *Maxit = 0;
     return b;
   }
-  
+
   while(maxit--)		/* Main iteration loop	*/
   {
     double prev_step = b-a;		/* Distance from the last but one
@@ -57,7 +57,7 @@ inline double cpp_uniroot(			/* An estimate of the root */
    * sion operations is delayed
    * until the last moment	*/
   double new_step;		/* Step at this iteration	*/
-  
+
   if( fabs(fc) < fabs(fb) )
   {				/* Swap data for b to be the	*/
   a = b;  b = c;  c = a;	/* best approximation		*/
@@ -65,19 +65,19 @@ inline double cpp_uniroot(			/* An estimate of the root */
   }
   tol_act = 2*EPSILON*fabs(b) + tol/2;
   new_step = (c-b)/2;
-  
+
   if( fabs(new_step) <= tol_act || fb == (double)0 )
   {
     *Maxit -= maxit;
     *Tol = fabs(c-b);
     return b;			/* Acceptable approx. is found	*/
   }
-  
+
   /* Decide if the interpolation can be tried	*/
   if( fabs(prev_step) >= tol_act	/* If prev_step was large enough*/
   && fabs(fa) > fabs(fb) ) {	/* and was in true direction,
    * Interpolation may be tried	*/
-  register double t1,cb,t2;
+  double t1,cb,t2;
     cb = c-b;
     if( a==c ) {		/* If we have only two distinct	*/
   /* points linear interpolation	*/
@@ -86,7 +86,7 @@ inline double cpp_uniroot(			/* An estimate of the root */
   q = 1.0 - t1;
     }
     else {			/* Quadric inverse interpolation*/
-  
+
   q = fa/fc;  t1 = fb/fc;	 t2 = fb/fa;
   p = t2 * ( cb*q*(q-t1) - (b-a)*(t1-1.0) );
   q = (q-1.0) * (t1-1.0) * (t2-1.0);
@@ -95,7 +95,7 @@ inline double cpp_uniroot(			/* An estimate of the root */
   q = -q;			/* opposite sign; make p positive */
   else			/* and assign possible minus to	*/
   p = -p;			/* q				*/
-  
+
   if( p < (0.75*cb*q-fabs(tol_act*q)/2) /* If b+p/q falls in [b,c]*/
   && p < fabs(prev_step*q/2) )	/* and isn't too large	*/
   new_step = p/q;			/* it is accepted
@@ -104,7 +104,7 @@ inline double cpp_uniroot(			/* An estimate of the root */
    * reduce [b,c] range to more
    * extent */
   }
-  
+
   if( fabs(new_step) < tol_act) {	/* Adjust the step to be not less*/
   if( new_step > (double)0 )	/* than tolerance		*/
   new_step = tol_act;
@@ -117,7 +117,7 @@ inline double cpp_uniroot(			/* An estimate of the root */
     /* Adjust c for it to have a sign opposite to that of b */
     c = a;  fc = fa;
   }
-  
+
   }
   /* failed! */
   *Tol = fabs(c-b);
