@@ -9,8 +9,8 @@ cpp_qcbbinom <- function(p, size, alpha, beta, lower_tail, log_p, p_tol, p_max_i
     .Call(`_cbbinom_cpp_qcbbinom`, p, size, alpha, beta, lower_tail, log_p, p_tol, p_max_iter, root_tol, root_max_iter)
 }
 
-cpp_dcbbinom <- function(x, size, alpha, beta, log, tol, max_iter) {
-    .Call(`_cbbinom_cpp_dcbbinom`, x, size, alpha, beta, log, tol, max_iter)
+dcbblp <- function(x, m, a, b, tol, max_iter) {
+    .Call(`_cbbinom_dcbblp`, x, m, a, b, tol, max_iter)
 }
 
 cpp_rcbbinom <- function(n, size, alpha, beta, p_tol, p_max_iter, root_tol, root_max_iter) {

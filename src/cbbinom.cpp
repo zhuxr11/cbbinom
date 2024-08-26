@@ -195,6 +195,8 @@ NumericVector cpp_qcbbinom(
   return q;
 }
 
+// [[Rcpp::interfaces(r, cpp)]]
+// [[Rcpp::export]]
 NumericMatrix dcbblp(
     const NumericVector& x,
     const NumericVector& m,
@@ -254,39 +256,37 @@ NumericMatrix dcbblp(
   return(f);
 }
 
-// [[Rcpp::interfaces(r, cpp)]]
-// [[Rcpp::export]]
-NumericVector cpp_dcbbinom(
-    const NumericVector& x,
-    const NumericVector& size,
-    const NumericVector& alpha,
-    const NumericVector& beta,
-    const bool& log,
-    const NumericVector& tol,
-    const IntegerVector& max_iter
-) {
-  if (std::min({x.length(), size.length(),
-               alpha.length(), beta.length()}) < 1) {
-    return NumericVector(0);
-  }
-
-  int n_max = std::max({
-    x.length(),
-    size.length(),
-    alpha.length(),
-    beta.length()
-  });
-  NumericVector p(n_max);
-
-  NumericMatrix lp = dcbblp(x, size, alpha, beta, tol, max_iter);
-  if (log == false) {
-    p = ((exp(lp(_, 0)) - exp(lp(_, 1))) / lp(_, 2));
-  } else {
-    p = Rcpp::log((lp(_, 0) - lp(_, 1)) / lp(_, 2)) +
-      cpp_pcbbinom(x, size, alpha, beta, true, true, tol, max_iter);
-  }
-  return p;
-}
+// // [[Rcpp::interfaces(r, cpp)]]
+// // [[Rcpp::export]]
+// NumericVector cpp_dcbbinom(
+//     const NumericVector& x,
+//     const NumericVector& size,
+//     const NumericVector& alpha,
+//     const NumericVector& beta,
+//     const bool& log,
+//     const NumericVector& tol,
+//     const IntegerVector& max_iter
+// ) {
+//   if (std::min({x.length(), size.length(),
+//                alpha.length(), beta.length()}) < 1) {
+//     return NumericVector(0);
+//   }
+//
+//   int n_max = std::max({
+//     x.length(),
+//     size.length(),
+//     alpha.length(),
+//     beta.length()
+//   });
+//
+//   NumericMatrix lp = dcbblp(x, size, alpha, beta, tol, max_iter);
+//   NumericVector p = Rcpp::log((lp(_, 0) - lp(_, 1)) / lp(_, 2)) +
+//     cpp_pcbbinom(x, size, alpha, beta, true, true, tol, max_iter);
+//   if (log == false) {
+//     p = exp(p);
+//   }
+//   return p;
+// }
 
 // [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]

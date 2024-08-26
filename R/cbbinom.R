@@ -8,11 +8,12 @@
 #'
 #' Derived from the continuous binomial distribution (Ilienko 2013), the continuous beta-binomial
 #' distribution is defined as:
-#' \deqn{\begin{aligned}
-#' P(x|\alpha,\beta,n)&=\int_0^1\frac{B_{1-p}(n+1-x,x)}{B(n+1-x,x)}\frac{p^{\alpha-1}(1-p)^{\beta-1}}{B(\alpha,\beta)}\mathrm{d}p\cr
-#' &=\frac{\Gamma(n+1)B(n+1-x+\beta,\alpha)}{\Gamma(x)\Gamma(n+2-x)B(\alpha,\beta)}{}_3F_2(a;b;z),
-#' \end{aligned}}
+#' \deqn{P(x|n,\alpha,\beta)&=\int_0^1\frac{B_{1-p}(n+1-x,x)}{B(n+1-x,x)}\frac{p^{\alpha-1}(1-p)^{\beta-1}}{B(\alpha,\beta)}dp,}
+#' where \eqn{x} is the quantile, \eqn{n} is the size, \eqn{B_p(a,b)=\int_0^p{u^{a-1}(1-u)^{b-1}du}}
+#' is the incomplete beta function.
 #'
+#' When simplified, the distribution becomes:
+#' \deqn{P(x|n,\alpha,\beta)=\frac{\Gamma(n+1)B(n+1-x+\beta,\alpha)}{\Gamma(x)\Gamma(n+2-x)B(\alpha,\beta)}{}_3F_2(a;b;z),}
 #' where \eqn{{}_3F_2(a;b;z)} is [generalized hypergeometric function][gen_hypergeo], \eqn{a=\{1-x,n+1-x,n+1-x+\beta\}},
 #' \eqn{b=\{n+2-x,n+1-x+\alpha+\beta\}}, \eqn{z=1}.
 #'
@@ -68,19 +69,30 @@
 #' rcbbinom(n = 10L, size = 10, alpha = 2, beta = 4)
 NULL
 
+#' @aliases dcbbinom
+#' @section Numerical computation of the density function:
+#' For simplicity, the density function is computed numerically through differentiation.
+#' To achieve higher numerical accuracy (given that \eqn{d\ln{u}/du>1,0<u<1}), it is computed as:
+#' \deqn{p(x|n,\alpha,\beta)=\frac{\partial{P(x|n,\alpha,\beta)}}{\partial{x}}=\frac{\partial\exp[\ln{P(x|n,\alpha,\beta)}]}{\partial{x}}}
+#' When simplified, it becomes:
+#' \deqn{p(x|n,\alpha,\beta)=\frac{\partial\exp[\ln{P(x|n,\alpha,\beta)}]}{\partial\ln{P(x|n,\alpha,\beta)}}\frac{\partial\ln{P(x|n,\alpha,\beta)}}{\partial{x}}=\frac{\partial\ln{P(x|n,\alpha,\beta)}}{\partial{x}}\ln{P(x|n,\alpha,\beta)},}
+#' where the first term is computed numerically and the second term is the distribution function.
 #' @export
 #' @rdname cbbinom
 dcbbinom <- function(x, size, alpha = 1, beta = 1, ncp = 0,
                      log = FALSE, tol = 1e-6, max_iter = 10000L) {
-  cpp_dcbbinom(x = as.numeric(x - ncp),
-               size = as.numeric(size),
-               alpha = as.numeric(alpha),
-               beta = as.numeric(beta),
-               log = as.logical(log[[1L]]),
-               tol = as.numeric(tol),
-               max_iter = as.integer(max_iter))
+  lp <- dcbblp(x, size, alpha, beta, tol, max_iter)
+  p <- base::log((lp[, 1L, drop = TRUE] - lp[, 2L, drop = TRUE]) / lp[, 3L, drop = TRUE]) +
+    pcbbinom(q = x, size = size, alpha = alpha, beta = beta,
+             lower.tail = TRUE, log.p = TRUE,
+             tol = tol, max_iter = max_iter)
+  if (log == FALSE) {
+    p <- exp(p)
+  }
+  p
 }
 
+#' @aliases pcbbinom
 #' @export
 #' @rdname cbbinom
 pcbbinom <- function(q, size, alpha = 1, beta = 1, ncp = 0,
@@ -96,6 +108,7 @@ pcbbinom <- function(q, size, alpha = 1, beta = 1, ncp = 0,
                max_iter = as.integer(max_iter))
 }
 
+#' @aliases qcbbinom
 #' @export
 #' @rdname cbbinom
 qcbbinom <- function(p, size, alpha = 1, beta = 1, ncp = 0,
@@ -114,6 +127,7 @@ qcbbinom <- function(p, size, alpha = 1, beta = 1, ncp = 0,
                root_max_iter = as.integer(root_max_iter)) + ncp
 }
 
+#' @aliases rcbbinom
 #' @export
 #' @rdname cbbinom
 rcbbinom <- function(n, size, alpha = 1, beta = 1, ncp = 0,

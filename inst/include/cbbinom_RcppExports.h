@@ -66,17 +66,17 @@ namespace cbbinom {
         return Rcpp::as<NumericVector >(rcpp_result_gen);
     }
 
-    inline NumericVector cpp_dcbbinom(const NumericVector& x, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const bool& log, const NumericVector& tol, const IntegerVector& max_iter) {
-        typedef SEXP(*Ptr_cpp_dcbbinom)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
-        static Ptr_cpp_dcbbinom p_cpp_dcbbinom = NULL;
-        if (p_cpp_dcbbinom == NULL) {
-            validateSignature("NumericVector(*cpp_dcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const NumericVector&,const IntegerVector&)");
-            p_cpp_dcbbinom = (Ptr_cpp_dcbbinom)R_GetCCallable("cbbinom", "_cbbinom_cpp_dcbbinom");
+    inline NumericMatrix dcbblp(const NumericVector& x, const NumericVector& m, const NumericVector& a, const NumericVector& b, const NumericVector& tol, const IntegerVector& max_iter) {
+        typedef SEXP(*Ptr_dcbblp)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_dcbblp p_dcbblp = NULL;
+        if (p_dcbblp == NULL) {
+            validateSignature("NumericMatrix(*dcbblp)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const IntegerVector&)");
+            p_dcbblp = (Ptr_dcbblp)R_GetCCallable("cbbinom", "_cbbinom_dcbblp");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_cpp_dcbbinom(Shield<SEXP>(Rcpp::wrap(x)), Shield<SEXP>(Rcpp::wrap(size)), Shield<SEXP>(Rcpp::wrap(alpha)), Shield<SEXP>(Rcpp::wrap(beta)), Shield<SEXP>(Rcpp::wrap(log)), Shield<SEXP>(Rcpp::wrap(tol)), Shield<SEXP>(Rcpp::wrap(max_iter)));
+            rcpp_result_gen = p_dcbblp(Shield<SEXP>(Rcpp::wrap(x)), Shield<SEXP>(Rcpp::wrap(m)), Shield<SEXP>(Rcpp::wrap(a)), Shield<SEXP>(Rcpp::wrap(b)), Shield<SEXP>(Rcpp::wrap(tol)), Shield<SEXP>(Rcpp::wrap(max_iter)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -84,7 +84,7 @@ namespace cbbinom {
             throw Rcpp::LongjumpException(rcpp_result_gen);
         if (rcpp_result_gen.inherits("try-error"))
             throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
-        return Rcpp::as<NumericVector >(rcpp_result_gen);
+        return Rcpp::as<NumericMatrix >(rcpp_result_gen);
     }
 
     inline NumericVector cpp_rcbbinom(const int& n, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const NumericVector& p_tol, const IntegerVector& p_max_iter, const NumericVector& root_tol, const IntegerVector& root_max_iter) {

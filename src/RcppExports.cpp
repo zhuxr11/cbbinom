@@ -97,27 +97,26 @@ RcppExport SEXP _cbbinom_cpp_qcbbinom(SEXP pSEXP, SEXP sizeSEXP, SEXP alphaSEXP,
     UNPROTECT(1);
     return rcpp_result_gen;
 }
-// cpp_dcbbinom
-NumericVector cpp_dcbbinom(const NumericVector& x, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const bool& log, const NumericVector& tol, const IntegerVector& max_iter);
-static SEXP _cbbinom_cpp_dcbbinom_try(SEXP xSEXP, SEXP sizeSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP logSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
+// dcbblp
+NumericMatrix dcbblp(const NumericVector& x, const NumericVector& m, const NumericVector& a, const NumericVector& b, const NumericVector& tol, const IntegerVector& max_iter);
+static SEXP _cbbinom_dcbblp_try(SEXP xSEXP, SEXP mSEXP, SEXP aSEXP, SEXP bSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const NumericVector& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type beta(betaSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type log(logSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type m(mSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type b(bSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const IntegerVector& >::type max_iter(max_iterSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_dcbbinom(x, size, alpha, beta, log, tol, max_iter));
+    rcpp_result_gen = Rcpp::wrap(dcbblp(x, m, a, b, tol, max_iter));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _cbbinom_cpp_dcbbinom(SEXP xSEXP, SEXP sizeSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP logSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
+RcppExport SEXP _cbbinom_dcbblp(SEXP xSEXP, SEXP mSEXP, SEXP aSEXP, SEXP bSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_cbbinom_cpp_dcbbinom_try(xSEXP, sizeSEXP, alphaSEXP, betaSEXP, logSEXP, tolSEXP, max_iterSEXP));
+        rcpp_result_gen = PROTECT(_cbbinom_dcbblp_try(xSEXP, mSEXP, aSEXP, bSEXP, tolSEXP, max_iterSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -225,7 +224,7 @@ static int _cbbinom_RcppExport_validate(const char* sig) {
     if (signatures.empty()) {
         signatures.insert("NumericVector(*cpp_pcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const bool&,const NumericVector&,const IntegerVector&)");
         signatures.insert("NumericVector(*cpp_qcbbinom)(NumericVector,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const bool&,const NumericVector&,const IntegerVector&,NumericVector,IntegerVector)");
-        signatures.insert("NumericVector(*cpp_dcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const NumericVector&,const IntegerVector&)");
+        signatures.insert("NumericMatrix(*dcbblp)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const IntegerVector&)");
         signatures.insert("NumericVector(*cpp_rcbbinom)(const int&,const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const IntegerVector&,const NumericVector&,const IntegerVector&)");
         signatures.insert("double(*gen_hypergeo)(NumericVector,NumericVector,const double&,const double&,const R_xlen_t&,const bool&,const bool&)");
     }
@@ -236,7 +235,7 @@ static int _cbbinom_RcppExport_validate(const char* sig) {
 RcppExport SEXP _cbbinom_RcppExport_registerCCallable() { 
     R_RegisterCCallable("cbbinom", "_cbbinom_cpp_pcbbinom", (DL_FUNC)_cbbinom_cpp_pcbbinom_try);
     R_RegisterCCallable("cbbinom", "_cbbinom_cpp_qcbbinom", (DL_FUNC)_cbbinom_cpp_qcbbinom_try);
-    R_RegisterCCallable("cbbinom", "_cbbinom_cpp_dcbbinom", (DL_FUNC)_cbbinom_cpp_dcbbinom_try);
+    R_RegisterCCallable("cbbinom", "_cbbinom_dcbblp", (DL_FUNC)_cbbinom_dcbblp_try);
     R_RegisterCCallable("cbbinom", "_cbbinom_cpp_rcbbinom", (DL_FUNC)_cbbinom_cpp_rcbbinom_try);
     R_RegisterCCallable("cbbinom", "_cbbinom_gen_hypergeo", (DL_FUNC)_cbbinom_gen_hypergeo_try);
     R_RegisterCCallable("cbbinom", "_cbbinom_RcppExport_validate", (DL_FUNC)_cbbinom_RcppExport_validate);
@@ -246,7 +245,7 @@ RcppExport SEXP _cbbinom_RcppExport_registerCCallable() {
 static const R_CallMethodDef CallEntries[] = {
     {"_cbbinom_cpp_pcbbinom", (DL_FUNC) &_cbbinom_cpp_pcbbinom, 8},
     {"_cbbinom_cpp_qcbbinom", (DL_FUNC) &_cbbinom_cpp_qcbbinom, 10},
-    {"_cbbinom_cpp_dcbbinom", (DL_FUNC) &_cbbinom_cpp_dcbbinom, 7},
+    {"_cbbinom_dcbblp", (DL_FUNC) &_cbbinom_dcbblp, 6},
     {"_cbbinom_cpp_rcbbinom", (DL_FUNC) &_cbbinom_cpp_rcbbinom, 8},
     {"_cbbinom_gen_hypergeo", (DL_FUNC) &_cbbinom_gen_hypergeo, 7},
     {"_cbbinom_RcppExport_registerCCallable", (DL_FUNC) &_cbbinom_RcppExport_registerCCallable, 0},

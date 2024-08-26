@@ -104,11 +104,12 @@ in the \code{stats} package.
 \details{
 Derived from the continuous binomial distribution (Ilienko 2013), the continuous beta-binomial
 distribution is defined as:
-\deqn{\begin{aligned}
-P(x|\alpha,\beta,n)&=\int_0^1\frac{B_{1-p}(n+1-x,x)}{B(n+1-x,x)}\frac{p^{\alpha-1}(1-p)^{\beta-1}}{B(\alpha,\beta)}\mathrm{d}p\cr
-&=\frac{\Gamma(n+1)B(n+1-x+\beta,\alpha)}{\Gamma(x)\Gamma(n+2-x)B(\alpha,\beta)}{}_3F_2(a;b;z),
-\end{aligned}}
+\deqn{P(x|n,\alpha,\beta)&=\int_0^1\frac{B_{1-p}(n+1-x,x)}{B(n+1-x,x)}\frac{p^{\alpha-1}(1-p)^{\beta-1}}{B(\alpha,\beta)}dp,}
+where \eqn{x} is the quantile, \eqn{n} is the size, \eqn{B_p(a,b)=\int_0^p{u^{a-1}(1-u)^{b-1}du}}
+is the incomplete beta function.
 
+When simplified, the distribution becomes:
+\deqn{P(x|n,\alpha,\beta)=\frac{\Gamma(n+1)B(n+1-x+\beta,\alpha)}{\Gamma(x)\Gamma(n+2-x)B(\alpha,\beta)}{}_3F_2(a;b;z),}
 where \eqn{{}_3F_2(a;b;z)} is \link[=gen_hypergeo]{generalized hypergeometric function}, \eqn{a=\{1-x,n+1-x,n+1-x+\beta\}},
 \eqn{b=\{n+2-x,n+1-x+\alpha+\beta\}}, \eqn{z=1}.
 
@@ -128,6 +129,16 @@ Change log:
 \item{0.1.0 Xiurui Zhu - Initiate the function.}
 }
 }
+\section{Numerical computation of the density function}{
+
+For simplicity, the density function is computed numerically through differentiation.
+To achieve higher numerical accuracy (given that \eqn{d\ln{u}/du>1,0<u<1}), it is computed as:
+\deqn{p(x|n,\alpha,\beta)=\frac{\partial{P(x|n,\alpha,\beta)}}{\partial{x}}=\frac{\partial\exp[\ln{P(x|n,\alpha,\beta)}]}{\partial{x}}}
+When simplified, it becomes:
+\deqn{p(x|n,\alpha,\beta)=\frac{\partial\exp[\ln{P(x|n,\alpha,\beta)}]}{\partial\ln{P(x|n,\alpha,\beta)}}\frac{\partial\ln{P(x|n,\alpha,\beta)}}{\partial{x}}=\frac{\partial\ln{P(x|n,\alpha,\beta)}}{\partial{x}}\ln{P(x|n,\alpha,\beta)},}
+where the first term is computed numerically and the second term is the distribution function.
+}
+
 \examples{
 # Density function
 dcbbinom(x = 5, size = 10, alpha = 2, beta = 4)
