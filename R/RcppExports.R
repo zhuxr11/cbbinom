@@ -48,5 +48,5 @@ gen_hypergeo <- function(U, L, x, tol, max_iter, check_mode, log) {
 
 # Register entry points for exported C++ functions
 methods::setLoadAction(function(ns) {
-    .Call('_cbbinom_RcppExport_registerCCallable', PACKAGE = 'cbbinom')
+    .Call(`_cbbinom_RcppExport_registerCCallable`)
 })
