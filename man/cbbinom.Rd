@@ -104,7 +104,7 @@ in the \code{stats} package.
 \details{
 Derived from the continuous binomial distribution (Ilienko 2013), the continuous beta-binomial
 distribution is defined as:
-\deqn{P(x|n,\alpha,\beta)&=\int_0^1\frac{B_{1-p}(n+1-x,x)}{B(n+1-x,x)}\frac{p^{\alpha-1}(1-p)^{\beta-1}}{B(\alpha,\beta)}dp,}
+\deqn{P(x|n,\alpha,\beta)=\int_0^1\frac{B_{1-p}(n+1-x,x)}{B(n+1-x,x)}\frac{p^{\alpha-1}(1-p)^{\beta-1}}{B(\alpha,\beta)}dp,}
 where \eqn{x} is the quantile, \eqn{n} is the size, \eqn{B_p(a,b)=\int_0^p{u^{a-1}(1-u)^{b-1}du}}
 is the incomplete beta function.
 
@@ -132,10 +132,10 @@ Change log:
 \section{Numerical computation of the density function}{
 
 For simplicity, the density function is computed numerically through differentiation.
-To achieve higher numerical accuracy (given that \eqn{d\ln{u}/du>1,0<u<1}), it is computed as:
+To achieve higher numerical resolution (given that \eqn{d\ln{u}/du>1,0<u<1}), it is computed as:
 \deqn{p(x|n,\alpha,\beta)=\frac{\partial{P(x|n,\alpha,\beta)}}{\partial{x}}=\frac{\partial\exp[\ln{P(x|n,\alpha,\beta)}]}{\partial{x}}}
 When simplified, it becomes:
-\deqn{p(x|n,\alpha,\beta)=\frac{\partial\exp[\ln{P(x|n,\alpha,\beta)}]}{\partial\ln{P(x|n,\alpha,\beta)}}\frac{\partial\ln{P(x|n,\alpha,\beta)}}{\partial{x}}=\frac{\partial\ln{P(x|n,\alpha,\beta)}}{\partial{x}}\ln{P(x|n,\alpha,\beta)},}
+\deqn{p(x|n,\alpha,\beta)=\frac{\partial\exp[\ln{P(x|n,\alpha,\beta)}]}{\partial\ln{P(x|n,\alpha,\beta)}}\frac{\partial\ln{P(x|n,\alpha,\beta)}}{\partial{x}}=\frac{\partial\ln{P(x|n,\alpha,\beta)}}{\partial{x}}P(x|n,\alpha,\beta),}
 where the first term is computed numerically and the second term is the distribution function.
 }
 
