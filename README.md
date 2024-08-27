@@ -9,14 +9,14 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/cbbinom)](https://CRAN.R-project.org/package=cbbinom)
-[![R-CMD-check](https://github.com/zhuxr11/cbbinom/workflows/R-CMD-check/badge.svg)](https://github.com/zhuxr11/cbbinom/actions)
+[![R-CMD-check](https://github.com/zhuxr11/cbbinom/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/zhuxr11/cbbinom/actions/workflows/R-CMD-check.yaml)
 [![Download
 stats](https://cranlogs.r-pkg.org/badges/grand-total/cbbinom)](https://CRAN.R-project.org/package=cbbinom)
 <!-- badges: end -->
 
 **Package**: [*cbbinom*](https://github.com/zhuxr11/cbbinom) 0.1.0<br />
-**Author**: Xiurui Zhu<br /> **Modified**: 2024-08-26 23:10:19<br />
-**Compiled**: 2024-08-26 23:10:28
+**Author**: Xiurui Zhu<br /> **Modified**: 2024-08-27 22:39:45<br />
+**Compiled**: 2024-08-27 22:39:50
 
 The goal of `cbbinom` is to implement continuous beta-binomial
 distribution.
@@ -51,6 +51,7 @@ library(cbbinom)
 ```
 
 ``` r
+# The continuous beta-binomial CDF, shift by -1
 cbbinom_plot_x <- seq(-1, 10, 0.01)
 cbbinom_plot_y <- pcbbinom(
   q = cbbinom_plot_x,
@@ -59,6 +60,7 @@ cbbinom_plot_y <- pcbbinom(
   beta = 4,
   ncp = -1
 )
+# The beta-binomial CDF
 bbinom_plot_x <- seq(0L, 10L, 1L)
 bbinom_plot_y <- extraDistr::pbbinom(
   q = bbinom_plot_x,
@@ -67,7 +69,6 @@ bbinom_plot_y <- extraDistr::pbbinom(
   beta = 4
 )
 ggplot2::ggplot(mapping = ggplot2::aes(x = x, y = y)) +
-  # The beta-binomial CDF
   ggplot2::geom_bar(
     data = data.frame(
       x = bbinom_plot_x,
@@ -75,7 +76,6 @@ ggplot2::ggplot(mapping = ggplot2::aes(x = x, y = y)) +
     ),
     stat = "identity"
   ) +
-  # The continuous beta-binomial CDF, shift by -1
   ggplot2::geom_point(
     data = data.frame(
       x = cbbinom_plot_x,
