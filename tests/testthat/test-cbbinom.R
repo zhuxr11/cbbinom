@@ -2,17 +2,19 @@ library(testthat)
 library(extraDistr)
 
 test_x <- 5
+test_val <- pcbbinom(q = test_x, size = 10, alpha = 2, beta = 4)
+
 testthat::test_that(
   "dcbbinom",
   {
-    testthat::expect_error(
+    testthat::expect_equal(
       dcbbinom(x = test_x, size = 10, alpha = 2, beta = 4),
-      NA
+      (pcbbinom(q = test_x + 1e-9, size = 10, alpha = 2, beta = 4) - test_val) / 1e-9,
+      tolerance = 1e-6
     )
   }
 )
 
-test_val <- pcbbinom(q = test_x, size = 10, alpha = 2, beta = 4)
 testthat::test_that(
   "pcbbinom",
   {
