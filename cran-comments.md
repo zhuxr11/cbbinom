@@ -2,6 +2,8 @@
 
 * Removed deprecated `register` keyword from `inst/include/zeroin.h`.
 
+* Fixed typos in equations.
+
 
 ## R CMD check results
 
