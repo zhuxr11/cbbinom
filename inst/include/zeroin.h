@@ -23,7 +23,7 @@ inline double cpp_uniroot(			/* An estimate of the root */
     double ax,				/* Left border | of the range	*/
     double bx,				/* Right border| the root is seeked*/
     double fa, double fb,		/* f(a), f(b) */
-    UnirootEqn* f,	/* Function under investigation	*/
+    const UnirootEqn* const f,	/* Function under investigation	*/
     double *Tol,			/* Acceptable tolerance		*/
     int *Maxit				/* Max # of iterations */
 ) {

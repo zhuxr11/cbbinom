@@ -6,6 +6,10 @@
 
 * Fix a bug in `cpp_qcbbinom()` that may change input `p`, `tol` and `max_iter`.
 
+## Enhancements
+
+* Add `const` keywords to `UnirootEqn` input of `cpp_uniroot()`, so that it may take a constant pointer to a `UnirootEqn` object, a pointer to a constant `UnirootEqn` object, or both.
+
 
 # cbbinom 0.1.0
 
