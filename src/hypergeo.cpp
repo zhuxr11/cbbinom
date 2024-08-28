@@ -37,8 +37,8 @@ double prod(const NumericVector& x) {
 //' gen_hypergeo(U = c(1.1, 0.2, 0.3), L = c(10.1, 4 * pi), x = 1,
 //'               max_iter = 10000L, tol = 1e-6, check_mode = TRUE, log = FALSE)
 // [[Rcpp::export]]
-double gen_hypergeo(NumericVector U,
-                    NumericVector L,
+double gen_hypergeo(const NumericVector& U,
+                    const NumericVector& L,
                     const double& x,
                     const double& tol,
                     const R_xlen_t& max_iter,
@@ -64,17 +64,19 @@ double gen_hypergeo(NumericVector U,
   double prev = 0.0;
   double term = x;
   bool conv = true;
+  NumericVector U_ = clone(U);
+  NumericVector L_ = clone(L);
   while (std::fabs(out - prev) > tol) {
     prev = out;
-    term *= prod(U) / prod(L) * x / n;
+    term *= prod(U_) / prod(L_) * x / n;
     out += term;
     n++;
     if (n >= max_iter) {
       conv = false;
       break;
     }
-    U = U + 1.0;
-    L = L + 1.0;
+    U_ = U_ + 1.0;
+    L_ = L_ + 1.0;
   }
   if (conv == false) {
     warning("Generalized hypergeometric function fails to converge");

@@ -59,12 +59,14 @@ testthat::test_that(
 testthat::test_that(
   "gen_hypergeo",
   {
+    U <- U_orig <- c(1 - test_x,
+                     test_size + 1 - test_x,
+                     test_size + 1 - test_x + test_beta)
+    L <- L_orig <- c(test_size + test_alpha - test_x,
+                     test_size + 1 - test_x + test_alpha + test_beta)
     testthat::expect_equal(
-      gen_hypergeo(U = c(1 - test_x,
-                         test_size + 1 - test_x,
-                         test_size + 1 - test_x + test_beta),
-                   L = c(test_size + test_alpha - test_x,
-                         test_size + 1 - test_x + test_alpha + test_beta),
+      gen_hypergeo(U = U,
+                   L = L,
                    x = 1,
                    tol = 1e-6,
                    max_iter = 10000L,
@@ -72,5 +74,8 @@ testthat::test_that(
                    log = FALSE),
       101/5460
     )
+    # Verify that U and L are not changed
+    testthat::expect_identical(U, U_orig)
+    testthat::expect_identical(L, L_orig)
   }
 )

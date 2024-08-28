@@ -4,8 +4,8 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-double gen_hypergeo(NumericVector U,
-                    NumericVector L,
+double gen_hypergeo(const NumericVector& U,
+                    const NumericVector& L,
                     const double& x,
                     const double& tol,
                     const R_xlen_t& max_iter,
