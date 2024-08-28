@@ -55,11 +55,11 @@ RcppExport SEXP _cbbinom_cpp_pcbbinom(SEXP qSEXP, SEXP sizeSEXP, SEXP alphaSEXP,
     return rcpp_result_gen;
 }
 // cpp_qcbbinom
-NumericVector cpp_qcbbinom(NumericVector p, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const bool& lower_tail, const bool& log_p, const NumericVector& p_tol, const IntegerVector& p_max_iter, NumericVector root_tol, IntegerVector root_max_iter);
+NumericVector cpp_qcbbinom(const NumericVector& p, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const bool& lower_tail, const bool& log_p, const NumericVector& p_tol, const IntegerVector& p_max_iter, const NumericVector& root_tol, const IntegerVector& root_max_iter);
 static SEXP _cbbinom_cpp_qcbbinom_try(SEXP pSEXP, SEXP sizeSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP p_tolSEXP, SEXP p_max_iterSEXP, SEXP root_tolSEXP, SEXP root_max_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type p(pSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type size(sizeSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type beta(betaSEXP);
@@ -67,8 +67,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const bool& >::type log_p(log_pSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type p_tol(p_tolSEXP);
     Rcpp::traits::input_parameter< const IntegerVector& >::type p_max_iter(p_max_iterSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type root_tol(root_tolSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type root_max_iter(root_max_iterSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type root_tol(root_tolSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type root_max_iter(root_max_iterSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_qcbbinom(p, size, alpha, beta, lower_tail, log_p, p_tol, p_max_iter, root_tol, root_max_iter));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
@@ -178,12 +178,12 @@ RcppExport SEXP _cbbinom_cpp_rcbbinom(SEXP nSEXP, SEXP sizeSEXP, SEXP alphaSEXP,
     return rcpp_result_gen;
 }
 // gen_hypergeo
-double gen_hypergeo(NumericVector U, NumericVector L, const double& x, const double& tol, const R_xlen_t& max_iter, const bool& check_mode, const bool& log);
+double gen_hypergeo(const NumericVector& U, const NumericVector& L, const double& x, const double& tol, const R_xlen_t& max_iter, const bool& check_mode, const bool& log);
 static SEXP _cbbinom_gen_hypergeo_try(SEXP USEXP, SEXP LSEXP, SEXP xSEXP, SEXP tolSEXP, SEXP max_iterSEXP, SEXP check_modeSEXP, SEXP logSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type U(USEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type L(LSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type U(USEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type L(LSEXP);
     Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const R_xlen_t& >::type max_iter(max_iterSEXP);
@@ -223,10 +223,10 @@ static int _cbbinom_RcppExport_validate(const char* sig) {
     static std::set<std::string> signatures;
     if (signatures.empty()) {
         signatures.insert("NumericVector(*cpp_pcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const bool&,const NumericVector&,const IntegerVector&)");
-        signatures.insert("NumericVector(*cpp_qcbbinom)(NumericVector,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const bool&,const NumericVector&,const IntegerVector&,NumericVector,IntegerVector)");
+        signatures.insert("NumericVector(*cpp_qcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const bool&,const NumericVector&,const IntegerVector&,const NumericVector&,const IntegerVector&)");
         signatures.insert("NumericMatrix(*dcbblp)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const IntegerVector&)");
         signatures.insert("NumericVector(*cpp_rcbbinom)(const int&,const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const IntegerVector&,const NumericVector&,const IntegerVector&)");
-        signatures.insert("double(*gen_hypergeo)(NumericVector,NumericVector,const double&,const double&,const R_xlen_t&,const bool&,const bool&)");
+        signatures.insert("double(*gen_hypergeo)(const NumericVector&,const NumericVector&,const double&,const double&,const R_xlen_t&,const bool&,const bool&)");
     }
     return signatures.find(sig) != signatures.end();
 }

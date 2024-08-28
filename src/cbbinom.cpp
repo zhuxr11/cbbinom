@@ -147,7 +147,7 @@ NumericVector cpp_pcbbinom(
 // [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]
 NumericVector cpp_qcbbinom(
-    NumericVector p,
+    const NumericVector& p,
     const NumericVector& size,
     const NumericVector& alpha,
     const NumericVector& beta,
@@ -155,8 +155,8 @@ NumericVector cpp_qcbbinom(
     const bool& log_p,
     const NumericVector& p_tol,
     const IntegerVector& p_max_iter,
-    NumericVector root_tol,
-    IntegerVector root_max_iter
+    const NumericVector& root_tol,
+    const IntegerVector& root_max_iter
 ) {
   if (std::min({p.length(), size.length(),
                alpha.length(), beta.length()}) < 1) {
@@ -171,16 +171,19 @@ NumericVector cpp_qcbbinom(
   });
   NumericVector q(n_max);
 
+  NumericVector p_ = clone(p);
   if (log_p == true) {
-    p = exp(p);
+    p_ = exp(p_);
   }
   if (lower_tail == false) {
-    p = 1 - p;
+    p_ = 1 - p_;
   }
 
+  NumericVector root_tol_ = clone(root_tol);
+  IntegerVector root_max_iter_ = clone(root_max_iter);
   for (R_xlen_t idx = 0; idx < n_max; idx++) {
     q(idx) = qcbbinom_(
-      GETV(p, idx),
+      GETV(p_, idx),
       GETV(size, idx),
       GETV(alpha, idx),
       GETV(beta, idx),
@@ -188,8 +191,8 @@ NumericVector cpp_qcbbinom(
       false,  // log_p
       GETV(p_tol, idx),
       GETV(p_max_iter, idx),
-      GETV(root_tol, idx),
-      GETV(root_max_iter, idx)
+      GETV(root_tol_, idx),
+      GETV(root_max_iter_, idx)
     );
   }
   return q;
@@ -255,38 +258,6 @@ NumericMatrix dcbblp(
   }
   return(f);
 }
-
-// // [[Rcpp::interfaces(r, cpp)]]
-// // [[Rcpp::export]]
-// NumericVector cpp_dcbbinom(
-//     const NumericVector& x,
-//     const NumericVector& size,
-//     const NumericVector& alpha,
-//     const NumericVector& beta,
-//     const bool& log,
-//     const NumericVector& tol,
-//     const IntegerVector& max_iter
-// ) {
-//   if (std::min({x.length(), size.length(),
-//                alpha.length(), beta.length()}) < 1) {
-//     return NumericVector(0);
-//   }
-//
-//   int n_max = std::max({
-//     x.length(),
-//     size.length(),
-//     alpha.length(),
-//     beta.length()
-//   });
-//
-//   NumericMatrix lp = dcbblp(x, size, alpha, beta, tol, max_iter);
-//   NumericVector p = Rcpp::log((lp(_, 0) - lp(_, 1)) / lp(_, 2)) +
-//     cpp_pcbbinom(x, size, alpha, beta, true, true, tol, max_iter);
-//   if (log == false) {
-//     p = exp(p);
-//   }
-//   return p;
-// }
 
 // [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]

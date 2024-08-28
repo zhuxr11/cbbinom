@@ -45,11 +45,11 @@ namespace cbbinom {
         return Rcpp::as<NumericVector >(rcpp_result_gen);
     }
 
-    inline NumericVector cpp_qcbbinom(NumericVector p, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const bool& lower_tail, const bool& log_p, const NumericVector& p_tol, const IntegerVector& p_max_iter, NumericVector root_tol, IntegerVector root_max_iter) {
+    inline NumericVector cpp_qcbbinom(const NumericVector& p, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const bool& lower_tail, const bool& log_p, const NumericVector& p_tol, const IntegerVector& p_max_iter, const NumericVector& root_tol, const IntegerVector& root_max_iter) {
         typedef SEXP(*Ptr_cpp_qcbbinom)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_cpp_qcbbinom p_cpp_qcbbinom = NULL;
         if (p_cpp_qcbbinom == NULL) {
-            validateSignature("NumericVector(*cpp_qcbbinom)(NumericVector,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const bool&,const NumericVector&,const IntegerVector&,NumericVector,IntegerVector)");
+            validateSignature("NumericVector(*cpp_qcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const bool&,const NumericVector&,const IntegerVector&,const NumericVector&,const IntegerVector&)");
             p_cpp_qcbbinom = (Ptr_cpp_qcbbinom)R_GetCCallable("cbbinom", "_cbbinom_cpp_qcbbinom");
         }
         RObject rcpp_result_gen;
@@ -108,11 +108,11 @@ namespace cbbinom {
         return Rcpp::as<NumericVector >(rcpp_result_gen);
     }
 
-    inline double gen_hypergeo(NumericVector U, NumericVector L, const double& x, const double& tol, const R_xlen_t& max_iter, const bool& check_mode, const bool& log) {
+    inline double gen_hypergeo(const NumericVector& U, const NumericVector& L, const double& x, const double& tol, const R_xlen_t& max_iter, const bool& check_mode, const bool& log) {
         typedef SEXP(*Ptr_gen_hypergeo)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_gen_hypergeo p_gen_hypergeo = NULL;
         if (p_gen_hypergeo == NULL) {
-            validateSignature("double(*gen_hypergeo)(NumericVector,NumericVector,const double&,const double&,const R_xlen_t&,const bool&,const bool&)");
+            validateSignature("double(*gen_hypergeo)(const NumericVector&,const NumericVector&,const double&,const double&,const R_xlen_t&,const bool&,const bool&)");
             p_gen_hypergeo = (Ptr_gen_hypergeo)R_GetCCallable("cbbinom", "_cbbinom_gen_hypergeo");
         }
         RObject rcpp_result_gen;
