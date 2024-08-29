@@ -1,5 +1,5 @@
 #include "hypergeo.h"
-#include "../inst/include/zeroin.h"
+#include "../inst/include/cbbinom/uniroot.h"
 #include <Rcpp.h>
 using namespace Rcpp;
 

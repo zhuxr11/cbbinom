@@ -2,6 +2,6 @@
 #define RCPP_cbbinom_H_GEN_
 
 #include "cbbinom_RcppExports.h"
-#include "zeroin.h"
+#include "cbbinom/uniroot.h"
 
 #endif // RCPP_cbbinom_H_GEN_
