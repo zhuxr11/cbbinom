@@ -11,7 +11,10 @@ gen_hypergeo(U, L, x, tol, max_iter, check_mode, log)
 
 \item{x}{Numeric (1L) as common ratio.}
 
-\item{tol}{Numeric (1L) as convergence tolerance.}
+\item{tol}{\code{NULL} or Numeric (1L) as convergence tolerance.
+If \code{NULL}, use the epsilon for the \code{value_type} determined by
+\code{boost::math::tools::promote_args} (e.g. for \code{double} input,
+usually use the epsilon for \code{long double}).}
 
 \item{max_iter}{Integer (1L) as iteration limit.}
 

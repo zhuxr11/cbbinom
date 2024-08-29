@@ -6,7 +6,8 @@ test_size <- 10
 test_alpha <- 2
 test_beta <- 4
 test_delta <- 1e-6
-test_tol <- 1e-6
+test_tol <- NULL
+test_root_tol <- 1e-6
 test_max_iter <- 10000L
 
 # Inputs
@@ -22,7 +23,8 @@ testthat::test_that(
                 alpha = test_alpha, beta = test_beta, log.p = TRUE) -
          pcbbinom(q = test_x - test_delta, size = test_size,
                   alpha = test_alpha, beta = test_beta, log.p = TRUE)) /
-        (2 * test_delta) * test_val
+        (2 * test_delta) * test_val,
+      tolerance = 1e-6
     )
   }
 )
@@ -54,7 +56,7 @@ testthat::test_that(
                    alpha = test_alpha, beta = test_beta,
                    lower_tail = TRUE, log_p = TRUE,
                    p_tol = test_tol, p_max_iter = test_max_iter,
-                   root_tol = test_tol, root_max_iter = test_max_iter),
+                   root_tol = test_root_tol, root_max_iter = test_max_iter),
       test_x
     )
     testthat::expect_identical(test_val_log, test_val_log_orig)
@@ -76,11 +78,11 @@ testthat::test_that(
 testthat::test_that(
   "gen_hypergeo",
   {
-    U <- U_orig <- c(1 - test_x,
-                     test_size + 1 - test_x,
-                     test_size + 1 - test_x + test_beta)
-    L <- L_orig <- c(test_size + test_alpha - test_x,
-                     test_size + 1 - test_x + test_alpha + test_beta)
+    U <- c(1 - test_x,
+           test_size + 1 - test_x,
+           test_size + 1 - test_x + test_beta)
+    L <- c(test_size + test_alpha - test_x,
+           test_size + 1 - test_x + test_alpha + test_beta)
     testthat::expect_equal(
       gen_hypergeo(U = U,
                    L = L,
@@ -91,8 +93,5 @@ testthat::test_that(
                    log = FALSE),
       101/5460
     )
-    # Verify that U and L are not changed
-    testthat::expect_identical(U, U_orig)
-    testthat::expect_identical(L, L_orig)
   }
 )

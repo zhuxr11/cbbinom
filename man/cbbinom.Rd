@@ -15,7 +15,7 @@ dcbbinom(
   beta = 1,
   ncp = 0,
   log = FALSE,
-  tol = 1e-06,
+  tol = NULL,
   max_iter = 10000L
 )
 
@@ -27,7 +27,7 @@ pcbbinom(
   ncp = 0,
   lower.tail = TRUE,
   log.p = FALSE,
-  tol = 1e-06,
+  tol = NULL,
   max_iter = 10000L
 )
 
@@ -39,7 +39,7 @@ qcbbinom(
   ncp = 0,
   lower.tail = TRUE,
   log.p = FALSE,
-  p_tol = 1e-06,
+  p_tol = NULL,
   p_max_iter = 10000L,
   root_tol = 1e-06,
   root_max_iter = 10000L
@@ -51,7 +51,7 @@ rcbbinom(
   alpha = 1,
   beta = 1,
   ncp = 0,
-  p_tol = 1e-06,
+  p_tol = NULL,
   p_max_iter = 10000L,
   root_tol = 1e-06,
   root_max_iter = 10000L

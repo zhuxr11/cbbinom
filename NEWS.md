@@ -10,6 +10,8 @@
 
 * Add `const` keywords to `UnirootEqn` input of `cpp_uniroot()`, so that it may take a constant pointer to a `UnirootEqn` object, a pointer to a constant `UnirootEqn` object, or both.
 
+* Use `BH` package to compute generalized hypergeometric functions and their numerical derivatives; also use `NULL` for self-determined tolerance.
+
 
 # cbbinom 0.1.0
 

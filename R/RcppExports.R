@@ -9,8 +9,8 @@ cpp_qcbbinom <- function(p, size, alpha, beta, lower_tail, log_p, p_tol, p_max_i
     .Call(`_cbbinom_cpp_qcbbinom`, p, size, alpha, beta, lower_tail, log_p, p_tol, p_max_iter, root_tol, root_max_iter)
 }
 
-dcbblp <- function(x, m, a, b, tol, max_iter) {
-    .Call(`_cbbinom_dcbblp`, x, m, a, b, tol, max_iter)
+cpp_dcbbinom <- function(x, size, alpha, beta, log, tol, max_iter) {
+    .Call(`_cbbinom_cpp_dcbbinom`, x, size, alpha, beta, log, tol, max_iter)
 }
 
 cpp_rcbbinom <- function(n, size, alpha, beta, p_tol, p_max_iter, root_tol, root_max_iter) {
@@ -23,7 +23,10 @@ cpp_rcbbinom <- function(n, size, alpha, beta, p_tol, p_max_iter, root_tol, root
 #'
 #' @param U,L Numeric vectors for upper and lower values.
 #' @param x Numeric (1L) as common ratio.
-#' @param tol Numeric (1L) as convergence tolerance.
+#' @param tol \code{NULL} or Numeric (1L) as convergence tolerance.
+#' If \code{NULL}, use the epsilon for the \code{value_type} determined by
+#' \code{boost::math::tools::promote_args} (e.g. for \code{double} input,
+#' usually use the epsilon for \code{long double}).
 #' @param max_iter Integer (1L) as iteration limit.
 #' @param check_mode Logical (1L) indicating whether the mode of \code{x}
 #' should be checked for obvious convergence failures.
