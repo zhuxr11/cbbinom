@@ -31,8 +31,8 @@
 #' @param alpha,beta non-negative parameters of the Beta distribution.
 #' @inheritParams stats::Binomial
 #' @inheritParams stats::Beta
-#' @param tol,max_iter arguments passed on to \code{\link{gen_hypergeo}}.
-#' @param p_tol,p_max_iter same as \code{tol}, \code{max_iter}.
+#' @param tol,max_iter,prec arguments passed on to \code{\link{gen_hypergeo}}.
+#' @param p_tol,p_max_iter,p_prec same as \code{tol}, \code{max_iter} and \code{prec}.
 #' @param root_tol,root_max_iter arguments passed on to \code{\link[stats]{uniroot}}.
 #'
 #' @return
@@ -50,6 +50,8 @@
 #' @note Change log:
 #' \itemize{
 #'   \item{0.1.0 Xiurui Zhu - Initiate the function.}
+#'   \item{0.1.1 Xiurui Zhu - Re-implement distribution function with \code{BH} package,
+#'     add \code{NULL} default tolerance, and add precision parameters.}
 #' }
 #'
 #' @references Ilienko, Andreii (2013). Continuous counterparts of Poisson and binomial
@@ -79,15 +81,16 @@ NULL
 #' where the first term is computed numerically and the second term is the distribution function.
 #' @export
 #' @rdname cbbinom
-dcbbinom <- function(x, size, alpha = 1, beta = 1, ncp = 0,
-                     log = FALSE, tol = NULL, max_iter = 10000L) {
+dcbbinom <- function(x, size, alpha = 1, beta = 1, ncp = 0, log = FALSE,
+                     tol = NULL, max_iter = 10000L, prec = 20) {
   p <- cpp_dcbbinom(x = as.numeric(x - ncp),
                     size = as.numeric(size),
                     alpha = as.numeric(alpha),
                     beta = as.numeric(beta),
                     log = TRUE,
                     tol = if (is.null(tol) == TRUE) NULL else as.numeric(tol),
-                    max_iter = as.integer(max_iter))
+                    max_iter = as.integer(max_iter),
+                    prec = as.numeric(prec))
   p[is.na(p) == TRUE] <- -Inf
   if (log == FALSE) {
     p <- exp(p)
@@ -100,7 +103,7 @@ dcbbinom <- function(x, size, alpha = 1, beta = 1, ncp = 0,
 #' @rdname cbbinom
 pcbbinom <- function(q, size, alpha = 1, beta = 1, ncp = 0,
                      lower.tail = TRUE, log.p = FALSE,
-                     tol = NULL, max_iter = 10000L) {
+                     tol = NULL, max_iter = 10000L, prec = 20) {
   cpp_pcbbinom(q = as.numeric(q - ncp),
                size = as.numeric(size),
                alpha = as.numeric(alpha),
@@ -108,7 +111,8 @@ pcbbinom <- function(q, size, alpha = 1, beta = 1, ncp = 0,
                lower_tail = as.logical(lower.tail[[1L]]),
                log_p = as.logical(log.p[[1L]]),
                tol = if (is.null(tol) == TRUE) NULL else as.numeric(tol),
-               max_iter = as.integer(max_iter))
+               max_iter = as.integer(max_iter),
+               prec = as.numeric(prec))
 }
 
 #' @aliases qcbbinom
@@ -116,7 +120,7 @@ pcbbinom <- function(q, size, alpha = 1, beta = 1, ncp = 0,
 #' @rdname cbbinom
 qcbbinom <- function(p, size, alpha = 1, beta = 1, ncp = 0,
                      lower.tail = TRUE, log.p = FALSE,
-                     p_tol = NULL, p_max_iter = 10000L,
+                     p_tol = NULL, p_max_iter = 10000L, p_prec = 20,
                      root_tol = 1e-6, root_max_iter = 10000L) {
   cpp_qcbbinom(p = as.numeric(p),
                size = as.numeric(size),
@@ -126,6 +130,7 @@ qcbbinom <- function(p, size, alpha = 1, beta = 1, ncp = 0,
                log_p = as.logical(log.p[[1L]]),
                p_tol = if (is.null(p_tol) == TRUE) NULL else as.numeric(p_tol),
                p_max_iter = as.integer(p_max_iter),
+               p_prec = as.numeric(p_prec),
                root_tol = as.numeric(root_tol),
                root_max_iter = as.integer(root_max_iter)) + ncp
 }
@@ -134,7 +139,7 @@ qcbbinom <- function(p, size, alpha = 1, beta = 1, ncp = 0,
 #' @export
 #' @rdname cbbinom
 rcbbinom <- function(n, size, alpha = 1, beta = 1, ncp = 0,
-                     p_tol = NULL, p_max_iter = 10000L,
+                     p_tol = NULL, p_max_iter = 10000L, p_prec = 20,
                      root_tol = 1e-6, root_max_iter = 10000L) {
   cpp_rcbbinom(n = as.integer(n[[1L]]),
                size = as.numeric(size),
@@ -142,6 +147,7 @@ rcbbinom <- function(n, size, alpha = 1, beta = 1, ncp = 0,
                beta = as.numeric(beta),
                p_tol = if (is.null(p_tol) == TRUE) NULL else as.numeric(p_tol),
                p_max_iter = as.integer(p_max_iter),
+               p_prec = as.numeric(p_prec),
                root_tol = as.numeric(root_tol),
                root_max_iter = as.integer(root_max_iter)) + ncp
 }

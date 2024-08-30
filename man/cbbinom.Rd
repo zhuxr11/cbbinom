@@ -16,7 +16,8 @@ dcbbinom(
   ncp = 0,
   log = FALSE,
   tol = NULL,
-  max_iter = 10000L
+  max_iter = 10000L,
+  prec = 20
 )
 
 pcbbinom(
@@ -28,7 +29,8 @@ pcbbinom(
   lower.tail = TRUE,
   log.p = FALSE,
   tol = NULL,
-  max_iter = 10000L
+  max_iter = 10000L,
+  prec = 20
 )
 
 qcbbinom(
@@ -41,6 +43,7 @@ qcbbinom(
   log.p = FALSE,
   p_tol = NULL,
   p_max_iter = 10000L,
+  p_prec = 20,
   root_tol = 1e-06,
   root_max_iter = 10000L
 )
@@ -53,6 +56,7 @@ rcbbinom(
   ncp = 0,
   p_tol = NULL,
   p_max_iter = 10000L,
+  p_prec = 20,
   root_tol = 1e-06,
   root_max_iter = 10000L
 )
@@ -68,14 +72,14 @@ rcbbinom(
 
 \item{log, log.p}{logical; if TRUE, probabilities p are given as log(p).}
 
-\item{tol, max_iter}{arguments passed on to \code{\link{gen_hypergeo}}.}
+\item{tol, max_iter, prec}{arguments passed on to \code{\link{gen_hypergeo}}.}
 
 \item{lower.tail}{logical; if TRUE (default), probabilities are
     \eqn{P[X \le x]}, otherwise, \eqn{P[X > x]}.}
 
 \item{p}{vector of probabilities.}
 
-\item{p_tol, p_max_iter}{same as \code{tol}, \code{max_iter}.}
+\item{p_tol, p_max_iter, p_prec}{same as \code{tol}, \code{max_iter} and \code{prec}.}
 
 \item{root_tol, root_max_iter}{arguments passed on to \code{\link[stats]{uniroot}}.}
 
@@ -127,6 +131,8 @@ for the continuous beta-binomial with non-shifted mean, use \code{ncp = -0.5}.
 Change log:
 \itemize{
 \item{0.1.0 Xiurui Zhu - Initiate the function.}
+\item{0.1.1 Xiurui Zhu - Re-implement distribution function with \code{BH} package,
+add \code{NULL} default tolerance, and add precision parameters.}
 }
 }
 \section{Numerical computation of the density function}{

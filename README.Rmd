@@ -63,7 +63,9 @@ cbbinom_plot_y <- pcbbinom(
   size = 10L,
   alpha = 2,
   beta = 4,
-  ncp = -1
+  ncp = -1,
+  # Set low precision for faster computation
+  prec = 0
 )
 # The beta-binomial CDF
 bbinom_plot_x <- seq(0L, 10L, 1L)
@@ -93,6 +95,43 @@ ggplot2::ggplot(mapping = ggplot2::aes(x = x, y = y)) +
   ggplot2::theme_bw() +
   ggplot2::labs(y = "CDF(x)")
 ```
+
+For larger sizes, you may need higher precision than double to compute the underlying generalized hypergeometric function, at the cost of computational speed.
+
+```{r cbbinom-prec, fig.width=7, fig.height=5, fig.dpi=192}
+cbbinom_plot_prec_x <- seq(0, 41, 0.1)
+# Compute at low precision
+system.time(cbbinom_plot_low_prec_y <- pcbbinom(
+  q = cbbinom_plot_prec_x,
+  size = 40L,
+  alpha = 2,
+  beta = 4,
+  ncp = -1,
+  prec = 0
+))
+ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
+                                  y = cbbinom_plot_low_prec_y),
+                mapping = ggplot2::aes(x = x, y = y)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_bw() +
+  ggplot2::labs(y = "CDF(x)")
+# Compute at medium (default) precision
+system.time(cbbinom_plot_mid_prec_y <- pcbbinom(
+  q = cbbinom_plot_prec_x,
+  size = 40L,
+  alpha = 2,
+  beta = 4,
+  ncp = -1,
+  prec = 20
+))
+ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
+                                  y = cbbinom_plot_mid_prec_y),
+                mapping = ggplot2::aes(x = x, y = y)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_bw() +
+  ggplot2::labs(y = "CDF(x)")
+```
+
 
 As the probability distributions in `stats` package, `cbbinom` provides a full set of density, distribution function, quantile function and random generation for the continuous beta-binomial distribution.
 

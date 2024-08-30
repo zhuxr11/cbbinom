@@ -4,7 +4,7 @@
 \alias{gen_hypergeo}
 \title{Generalized hypergeometric function}
 \usage{
-gen_hypergeo(U, L, x, tol, max_iter, check_mode, log)
+gen_hypergeo(U, L, x, tol, max_iter, prec, check_mode, log)
 }
 \arguments{
 \item{U, L}{Numeric vectors for upper and lower values.}
@@ -18,13 +18,23 @@ usually use the epsilon for \code{long double}).}
 
 \item{max_iter}{Integer (1L) as iteration limit.}
 
+\item{prec}{Numeric (1L) as precision level (0/20/50/100/200) during computation,
+a.k.a the number of precise digits defined in \code{boost::multiprecision::cpp_bin_float}.
+For level 0, \code{double} precision is used. For level 20, the precision is slightly
+higher than \code{long double}
+(\code{.Machine[["longdouble.eps"]] = 1.084202e-19}).
+For higher levels of 50/100/200, the higher the precision, the slower the computation.
+For prec < 20, use level 0; for 20 <= prec < 50, use level 20; for 50 <= prec < 100,
+use level 50; for 100 <= prec < 200, use level 100; for prec >= 200, use level 200.}
+
 \item{check_mode}{Logical (1L) indicating whether the mode of \code{x}
 should be checked for obvious convergence failures.}
 
 \item{log}{Logical (1L) indicating whether result is given as log(result).}
 }
 \value{
-Result of computation. Warnings are issued if failing to converge.
+Numeric (1L) as the result of computation (at \code{double} precision).
+Warnings are issued if failing to converge.
 }
 \description{
 \code{gen_hypergeo} computes generalized hypergeometric function.
@@ -33,11 +43,12 @@ Result of computation. Warnings are issued if failing to converge.
 Change log:
 \itemize{
 \item{0.1.0 Xiurui Zhu - Initiate the function.}
+\item{0.1.1 Xiurui Zhu - Use \code{boost} for higher accuracy.}
 }
 }
 \examples{
 gen_hypergeo(U = c(1.1, 0.2, 0.3), L = c(10.1, 4 * pi), x = 1,
-              max_iter = 10000L, tol = 1e-6, check_mode = TRUE, log = FALSE)
+             tol = NULL, max_iter = 10000L, prec = 20, check_mode = TRUE, log = FALSE)
 }
 \author{
 Xiurui Zhu

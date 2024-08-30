@@ -14,9 +14,9 @@ status](https://www.r-pkg.org/badges/version/cbbinom)](https://CRAN.R-project.or
 stats](https://cranlogs.r-pkg.org/badges/grand-total/cbbinom)](https://CRAN.R-project.org/package=cbbinom)
 <!-- badges: end -->
 
-**Package**: [*cbbinom*](https://github.com/zhuxr11/cbbinom) 0.1.0<br />
-**Author**: Xiurui Zhu<br /> **Modified**: 2024-08-27 22:39:45<br />
-**Compiled**: 2024-08-27 22:39:50
+**Package**: [*cbbinom*](https://github.com/zhuxr11/cbbinom)
+0.1.0.9000<br /> **Author**: Xiurui Zhu<br /> **Modified**: 2024-08-31
+00:12:42<br /> **Compiled**: 2024-08-31 00:12:47
 
 The goal of `cbbinom` is to implement continuous beta-binomial
 distribution.
@@ -58,7 +58,9 @@ cbbinom_plot_y <- pcbbinom(
   size = 10L,
   alpha = 2,
   beta = 4,
-  ncp = -1
+  ncp = -1,
+  # Set low precision for faster computation
+  prec = 0
 )
 # The beta-binomial CDF
 bbinom_plot_x <- seq(0L, 10L, 1L)
@@ -91,6 +93,61 @@ ggplot2::ggplot(mapping = ggplot2::aes(x = x, y = y)) +
 
 <img src="man/figures/README-cbbinom-vs-bbinom-1.png" width="100%" />
 
+For larger sizes, you may need higher precision than double to compute
+the underlying generalized hypergeometric function, at the cost of
+computational speed.
+
+``` r
+cbbinom_plot_prec_x <- seq(0, 41, 0.1)
+# Compute at low precision
+system.time(cbbinom_plot_low_prec_y <- pcbbinom(
+  q = cbbinom_plot_prec_x,
+  size = 40L,
+  alpha = 2,
+  beta = 4,
+  ncp = -1,
+  prec = 0
+))
+#>    user  system elapsed 
+#>    0.06    0.00    0.06
+```
+
+``` r
+ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
+                                  y = cbbinom_plot_low_prec_y),
+                mapping = ggplot2::aes(x = x, y = y)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_bw() +
+  ggplot2::labs(y = "CDF(x)")
+```
+
+<img src="man/figures/README-cbbinom-prec-1.png" width="100%" />
+
+``` r
+# Compute at medium (default) precision
+system.time(cbbinom_plot_mid_prec_y <- pcbbinom(
+  q = cbbinom_plot_prec_x,
+  size = 40L,
+  alpha = 2,
+  beta = 4,
+  ncp = -1,
+  prec = 20
+))
+#>    user  system elapsed 
+#>    4.39    0.00    4.39
+```
+
+``` r
+ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
+                                  y = cbbinom_plot_mid_prec_y),
+                mapping = ggplot2::aes(x = x, y = y)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_bw() +
+  ggplot2::labs(y = "CDF(x)")
+```
+
+<img src="man/figures/README-cbbinom-prec-2.png" width="100%" />
+
 As the probability distributions in `stats` package, `cbbinom` provides
 a full set of density, distribution function, quantile function and
 random generation for the continuous beta-binomial distribution.
@@ -98,7 +155,7 @@ random generation for the continuous beta-binomial distribution.
 ``` r
 # Density function
 dcbbinom(x = 5, size = 10, alpha = 2, beta = 4)
-#> [1] 0.4761784
+#> [1] 0.12669
 ```
 
 ``` r
@@ -117,8 +174,8 @@ qcbbinom(p = test_val, size = 10, alpha = 2, beta = 4)
 # Random generation
 set.seed(1111L)
 rcbbinom(n = 10L, size = 10, alpha = 2, beta = 4)
-#>  [1] 3.358800 3.038155 7.110413 1.311272 5.264337 8.709327 6.721018 1.164173
-#>  [9] 3.868141 1.332541
+#>  [1] 3.359039 3.038286 7.110936 1.311321 5.264688 8.709005 6.720415 1.164210
+#>  [9] 3.868370 1.332590
 ```
 
 For mathematical details, please check the details section of

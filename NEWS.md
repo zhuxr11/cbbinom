@@ -12,6 +12,8 @@
 
 * Use `BH` package to compute generalized hypergeometric functions and their numerical derivatives; also use `NULL` for self-determined tolerance.
 
+* Add precision level in generalized hypergeometric functions for flexible trade-off of computational accuracy and time.
+
 
 # cbbinom 0.1.0
 
