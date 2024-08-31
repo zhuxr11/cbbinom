@@ -24,8 +24,8 @@
 #' beta-binomial is \code{[0, size + 1]}, and the mean is approximately
 #' \code{size * alpha / (alpha + beta) + 1/2}.
 #'
-#' Supplying \code{ncp} moves the support of beta-binomial to \code{[ncp, size + 1 + ncp]}, e.g.
-#' for the continuous beta-binomial with non-shifted mean, use \code{ncp = -0.5}.
+#' Supplying \code{ncp != 0} moves the support of beta-binomial to \code{[ncp, size + 1 + ncp]}. For example,
+#' to build a continuous beta-binomial with approximately non-shifted mean, use \code{ncp = -0.5}.
 #'
 #' @param x,q vector of quantiles.
 #' @param alpha,beta non-negative parameters of the Beta distribution.
@@ -72,17 +72,10 @@
 NULL
 
 #' @aliases dcbbinom
-#' @section Numerical computation of the density function:
-#' For simplicity, the density function is computed numerically through differentiation.
-#' To achieve higher numerical resolution (given that \eqn{d\ln{u}/du>1,0<u<1}), it is computed as:
-#' \deqn{p(x|n,\alpha,\beta)=\frac{\partial{P(x|n,\alpha,\beta)}}{\partial{x}}=\frac{\partial\exp[\ln{P(x|n,\alpha,\beta)}]}{\partial{x}}}
-#' When simplified, it becomes:
-#' \deqn{p(x|n,\alpha,\beta)=\frac{\partial\exp[\ln{P(x|n,\alpha,\beta)}]}{\partial\ln{P(x|n,\alpha,\beta)}}\frac{\partial\ln{P(x|n,\alpha,\beta)}}{\partial{x}}=\frac{\partial\ln{P(x|n,\alpha,\beta)}}{\partial{x}}P(x|n,\alpha,\beta),}
-#' where the first term is computed numerically and the second term is the distribution function.
 #' @export
 #' @rdname cbbinom
 dcbbinom <- function(x, size, alpha = 1, beta = 1, ncp = 0, log = FALSE,
-                     tol = NULL, max_iter = 10000L, prec = 20) {
+                     tol = NULL, max_iter = 10000L, prec = 0) {
   p <- cpp_dcbbinom(x = as.numeric(x - ncp),
                     size = as.numeric(size),
                     alpha = as.numeric(alpha),
@@ -103,7 +96,7 @@ dcbbinom <- function(x, size, alpha = 1, beta = 1, ncp = 0, log = FALSE,
 #' @rdname cbbinom
 pcbbinom <- function(q, size, alpha = 1, beta = 1, ncp = 0,
                      lower.tail = TRUE, log.p = FALSE,
-                     tol = NULL, max_iter = 10000L, prec = 20) {
+                     tol = NULL, max_iter = 10000L, prec = 0) {
   cpp_pcbbinom(q = as.numeric(q - ncp),
                size = as.numeric(size),
                alpha = as.numeric(alpha),
@@ -120,7 +113,7 @@ pcbbinom <- function(q, size, alpha = 1, beta = 1, ncp = 0,
 #' @rdname cbbinom
 qcbbinom <- function(p, size, alpha = 1, beta = 1, ncp = 0,
                      lower.tail = TRUE, log.p = FALSE,
-                     p_tol = NULL, p_max_iter = 10000L, p_prec = 20,
+                     p_tol = NULL, p_max_iter = 10000L, p_prec = 0,
                      root_tol = 1e-6, root_max_iter = 10000L) {
   cpp_qcbbinom(p = as.numeric(p),
                size = as.numeric(size),
@@ -139,7 +132,7 @@ qcbbinom <- function(p, size, alpha = 1, beta = 1, ncp = 0,
 #' @export
 #' @rdname cbbinom
 rcbbinom <- function(n, size, alpha = 1, beta = 1, ncp = 0,
-                     p_tol = NULL, p_max_iter = 10000L, p_prec = 20,
+                     p_tol = NULL, p_max_iter = 10000L, p_prec = 0,
                      root_tol = 1e-6, root_max_iter = 10000L) {
   cpp_rcbbinom(n = as.integer(n[[1L]]),
                size = as.numeric(size),

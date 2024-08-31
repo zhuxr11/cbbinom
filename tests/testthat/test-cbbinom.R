@@ -5,7 +5,7 @@ library(extraDistr)
 test_size <- 10
 test_alpha <- 2
 test_beta <- 4
-test_delta <- 1e-6
+test_delta <- 1e-3
 test_tol <- NULL
 test_prec <- 20
 test_root_tol <- 1e-6
@@ -21,10 +21,10 @@ testthat::test_that(
     testthat::expect_equal(
       dcbbinom(x = test_x, size = test_size, alpha = test_alpha, beta = test_beta),
       (pcbbinom(q = test_x + test_delta, size = test_size,
-                alpha = test_alpha, beta = test_beta, log.p = TRUE) -
+                alpha = test_alpha, beta = test_beta, log.p = FALSE) -
          pcbbinom(q = test_x - test_delta, size = test_size,
-                  alpha = test_alpha, beta = test_beta, log.p = TRUE)) /
-        (2 * test_delta) * test_val
+                  alpha = test_alpha, beta = test_beta, log.p = FALSE)) /
+        (2 * test_delta)
     )
   }
 )

@@ -43,7 +43,7 @@ Alternatively, you can install the developmental version of `cbbinom` from [gith
 remotes::install_github("zhuxr11/cbbinom")
 ```
 
-## Examples of continuous beta-binomial distribution
+## Introduction to continuous beta-binomial distribution
 
 The continuous beta-binomial distribution spreads the standard probability mass of beta-binomial distribution at `x` to an interval `[x, x + 1]` in a continuous manner. This can be validated via the following plot, where we can see that the cumulative distribution function (CDF) of the continuous beta-binomial distribution at `x + 1` equals to that of the beta-binomial distribution at `x`.
 
@@ -55,12 +55,12 @@ library(cbbinom)
 pkgload::load_all()
 ```
 
-```{r cbbinom-vs-bbinom, fig.width=7, fig.height=5, fig.dpi=192}
+```{r cbbinom-vs-bbinom-p, fig.width=7, fig.height=5, fig.dpi=192}
 # The continuous beta-binomial CDF, shift by -1
 cbbinom_plot_x <- seq(-1, 10, 0.01)
 cbbinom_plot_y <- pcbbinom(
   q = cbbinom_plot_x,
-  size = 10L,
+  size = 10,
   alpha = 2,
   beta = 4,
   ncp = -1,
@@ -96,42 +96,117 @@ ggplot2::ggplot(mapping = ggplot2::aes(x = x, y = y)) +
   ggplot2::labs(y = "CDF(x)")
 ```
 
-For larger sizes, you may need higher precision than double to compute the underlying generalized hypergeometric function, at the cost of computational speed.
+However, the central density at `x + 1/2` of the continuous beta-binomial distribution may not equal to the corresponding probability mass at `x`, especially around the summit and to the right (since `alpha < beta`).
 
-```{r cbbinom-prec, fig.width=7, fig.height=5, fig.dpi=192}
+```{r cbbinom-vs-bbinom-d}
+# The continuous beta-binomial CDF, shift by -1/2
+cbbinom_plot_x_d <- seq(-1/2, 10 + 1/2, 0.01)
+cbbinom_plot_y_d <- dcbbinom(
+  x = cbbinom_plot_x_d,
+  size = 10,
+  alpha = 2,
+  beta = 4,
+  ncp = -1/2,
+  # Set low precision for faster computation
+  prec = 0
+)
+# The beta-binomial CDF
+bbinom_plot_x <- seq(0L, 10L, 1L)
+bbinom_plot_y_d <- extraDistr::dbbinom(
+  x = bbinom_plot_x,
+  size = 10L,
+  alpha = 2,
+  beta = 4
+)
+ggplot2::ggplot(mapping = ggplot2::aes(x = x, y = y)) +
+  ggplot2::geom_bar(
+    data = data.frame(
+      x = bbinom_plot_x,
+      y = bbinom_plot_y_d
+    ),
+    stat = "identity"
+  ) +
+  ggplot2::geom_point(
+    data = data.frame(
+      x = cbbinom_plot_x_d,
+      y = cbbinom_plot_y_d
+    )
+  ) +
+  ggplot2::scale_x_continuous(
+    n.breaks = diff(range(bbinom_plot_x))
+  ) +
+  ggplot2::theme_bw() +
+  ggplot2::labs(y = "CDF(x)")
+```
+
+For larger sizes, you may need higher precision than double for accuracy, at the cost of computational speed. When computing probability density, it is advisable to use a higher accuracy level than the one sufficient to compute the corresponding cumulative probability (e.g. 20 -> 25), since numerical derivative taken to compute the probability density may be more sensitive to computational errors.
+
+```{r cbbinom-prec-pd, fig.width=7, fig.height=5, fig.dpi=192}
 cbbinom_plot_prec_x <- seq(0, 41, 0.1)
-# Compute at low precision
-system.time(cbbinom_plot_low_prec_y <- pcbbinom(
+# Compute CDF at default (double) precision level
+system.time(pcbbinom_plot_prec0_y <- pcbbinom(
   q = cbbinom_plot_prec_x,
-  size = 40L,
+  size = 40,
   alpha = 2,
   beta = 4,
   ncp = -1,
   prec = 0
 ))
 ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
-                                  y = cbbinom_plot_low_prec_y),
+                                  y = pcbbinom_plot_prec0_y),
                 mapping = ggplot2::aes(x = x, y = y)) +
   ggplot2::geom_point() +
   ggplot2::theme_bw() +
   ggplot2::labs(y = "CDF(x)")
-# Compute at medium (default) precision
-system.time(cbbinom_plot_mid_prec_y <- pcbbinom(
+# Compute CDF at precision level 20
+system.time(pcbbinom_plot_prec20_y <- pcbbinom(
   q = cbbinom_plot_prec_x,
-  size = 40L,
+  size = 40,
   alpha = 2,
   beta = 4,
   ncp = -1,
   prec = 20
 ))
 ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
-                                  y = cbbinom_plot_mid_prec_y),
+                                  y = pcbbinom_plot_prec20_y),
                 mapping = ggplot2::aes(x = x, y = y)) +
   ggplot2::geom_point() +
   ggplot2::theme_bw() +
   ggplot2::labs(y = "CDF(x)")
+# Compute PDF at precision level 20
+system.time(dcbbinom_plot_prec20_y <- dcbbinom(
+  x = cbbinom_plot_prec_x,
+  size = 40,
+  alpha = 2,
+  beta = 4,
+  ncp = -1,
+  prec = 20
+))
+ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
+                                  y = dcbbinom_plot_prec20_y),
+                mapping = ggplot2::aes(x = x, y = y)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_bw() +
+  ggplot2::labs(y = "PDF(x)")
+# Compute PDF at precision level 25
+system.time(dcbbinom_plot_prec25_y <- dcbbinom(
+  x = cbbinom_plot_prec_x,
+  size = 40,
+  alpha = 2,
+  beta = 4,
+  ncp = -1,
+  prec = 25
+))
+ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
+                                  y = dcbbinom_plot_prec25_y),
+                mapping = ggplot2::aes(x = x, y = y)) +
+  ggplot2::geom_point() +
+  ggplot2::theme_bw() +
+  ggplot2::labs(y = "PDF(x)")
 ```
 
+
+## Examples of continuous beta-binomial distribution
 
 As the probability distributions in `stats` package, `cbbinom` provides a full set of density, distribution function, quantile function and random generation for the continuous beta-binomial distribution.
 

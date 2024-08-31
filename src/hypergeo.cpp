@@ -666,14 +666,14 @@ std::vector<T3> conv_vec_prec(const T1& x) {
 //' \code{boost::math::tools::promote_args} (e.g. for \code{double} input,
 //' usually use the epsilon for \code{long double}).
 //' @param max_iter Integer (1L) as iteration limit.
-//' @param prec Numeric (1L) as precision level (0/20/50/100/200) during computation,
+//' @param prec Numeric (1L) as precision level during computation,
 //' a.k.a the number of precise digits defined in \code{boost::multiprecision::cpp_bin_float}.
 //' For level 0, \code{double} precision is used. For level 20, the precision is slightly
 //' higher than \code{long double}
 //' (\code{.Machine[["longdouble.eps"]] = `r format(.Machine[["longdouble.eps"]], scientific = TRUE)`}).
-//' For higher levels of 50/100/200, the higher the precision, the slower the computation.
-//' For prec < 20, use level 0; for 20 <= prec < 50, use level 20; for 50 <= prec < 100,
-//' use level 50; for 100 <= prec < 200, use level 100; for prec >= 200, use level 200.
+//' Higher levels include 25/30/35/.../50. The higher the accuracy,
+//' the slower the computation. For an input other than these values, the lowest level
+//' greater than the input is used, up to 50.
 //' @param check_mode Logical (1L) indicating whether the mode of \code{x}
 //' should be checked for obvious convergence failures.
 //' @param log Logical (1L) indicating whether result is given as log(result).
@@ -724,16 +724,22 @@ double gen_hypergeo(const NumericVector& U,
   // Main code
   typedef typename boost::math::policies::policy<> MyPol;
   double out = R_NaN;
-  if (prec < 20.0) {
+  if (prec <= 0.0) {
     HYPERGEO_PREC_NOCONV(double)
-  } else if (prec < 50.0) {
-    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<20>>, cpp_bin_float_custom_20)
-  } else if (prec < 100.0) {
-    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<50>>, cpp_bin_float_custom_50)
-  } else if (prec < 200.0) {
-    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<100>>, cpp_bin_float_custom_100)
+  } else if (prec <= 20.0) {
+    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<20>>, cpp_bin_float_custom)
+  } else if (prec <= 25.0) {
+    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<25>>, cpp_bin_float_custom)
+  } else if (prec <= 30.0) {
+    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<30>>, cpp_bin_float_custom)
+  } else if (prec <= 35.0) {
+    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<35>>, cpp_bin_float_custom0)
+  } else if (prec <= 40.0) {
+    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<40>>, cpp_bin_float_custom)
+  } else if (prec <= 45.0) {
+    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<45>>, cpp_bin_float_custom)
   } else {
-    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<200>>, cpp_bin_float_custom_200)
+    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<50>>, cpp_bin_float_custom)
   }
   if (log == true) {
     return std::log(out);
@@ -744,5 +750,5 @@ double gen_hypergeo(const NumericVector& U,
 
 /*** R
 gen_hypergeo(U = c(1.1, 0.2, 0.3), L = c(10.1, 4 * pi), x = 1,
-             tol = NULL, max_iter = 10000L, prec = 20, check_mode = TRUE, log = FALSE)
+             tol = NULL, max_iter = 10000L, prec = 0, check_mode = TRUE, log = FALSE)
 */

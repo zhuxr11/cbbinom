@@ -18,14 +18,14 @@ usually use the epsilon for \code{long double}).}
 
 \item{max_iter}{Integer (1L) as iteration limit.}
 
-\item{prec}{Numeric (1L) as precision level (0/20/50/100/200) during computation,
+\item{prec}{Numeric (1L) as precision level during computation,
 a.k.a the number of precise digits defined in \code{boost::multiprecision::cpp_bin_float}.
 For level 0, \code{double} precision is used. For level 20, the precision is slightly
 higher than \code{long double}
 (\code{.Machine[["longdouble.eps"]] = 1.084202e-19}).
-For higher levels of 50/100/200, the higher the precision, the slower the computation.
-For prec < 20, use level 0; for 20 <= prec < 50, use level 20; for 50 <= prec < 100,
-use level 50; for 100 <= prec < 200, use level 100; for prec >= 200, use level 200.}
+Higher levels include 25/30/35/.../50. The higher the accuracy,
+the slower the computation. For an input other than these values, the lowest level
+greater than the input is used, up to 50.}
 
 \item{check_mode}{Logical (1L) indicating whether the mode of \code{x}
 should be checked for obvious convergence failures.}

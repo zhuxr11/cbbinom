@@ -69,6 +69,68 @@ double pcbbinom_(
   return out;
 }
 
+// Adapt boost::math::differentiation::finite_difference_derivative() to accept one-sided derivative
+namespace boost {
+namespace math {
+namespace differentiation {
+
+template<class F, class Real>
+Real finite_difference_derivative_bound(const F f, Real x, Real low, Real high, Real* error = nullptr)
+{
+  using std::sqrt;
+  using std::pow;
+  using std::abs;
+  using std::numeric_limits;
+
+  const Real eps = (numeric_limits<Real>::epsilon)();
+  // Error bound ~eps^6/7
+  // Error: h^6f^(7)(x)/140 + 5|f(x)|eps/h
+  Real h = pow(eps / 168, static_cast<Real>(1) / static_cast<Real>(7));
+  h = detail::make_xph_representable(x, h);
+
+  Real y = f(x);
+  Real yh = f(x + h);
+  Real ymh = f(x - h);
+  Real y1 = yh - ymh;
+  Real y2h = f(x + 2 * h);
+  Real ym2h = f(x - 2 * h);
+  Real y3h = f(x + 3 * h);
+  Real ym3h = f(x - 3 * h);
+  Real y2 = ym2h - y2h;
+  Real y3 = y3h - ym3h;
+
+  if ((x - 3 * h >= low) && (x + 3 * h <= high)) {
+    if (error)
+    {
+      // Mathematica code to generate fd scheme for 7th derivative:
+      // Sum[(-1)^i*Binomial[7, i]*(f[x+(3-i)*h] + f[x+(4-i)*h])/2, {i, 0, 7}]
+      // Mathematica to demonstrate that this is a finite difference formula for 7th derivative:
+      // Series[(f[x+4*h]-f[x-4*h] + 6*(f[x-3*h] - f[x+3*h]) + 14*(f[x-h] - f[x+h] + f[x+2*h] - f[x-2*h]))/2, {h, 0, 15}]
+      Real y7 = (f(x + 4 * h) - f(x - 4 * h) - 6 * y3 - 14 * y1 - 14 * y2) / 2;
+      *error = abs(y7) / (140 * h) + 5 * (abs(yh) + abs(ymh))*eps / h;
+    }
+    return (y3 + 9 * y2 + 45 * y1) / (60 * h);
+  } else if (x - 3 * h >= low) {
+    // Backward differentiation
+    if (error) {
+      warning("[error] not implemented for backward differentiation");
+    }
+    return (11 * y - 18 * ymh + 9 * ym2h - 2 * ym3h) / (6 * h);
+  } else if (x + 3 * h <= high) {
+    // Forward differentiation
+    if (error) {
+      warning("[error] not implemented for forward differentiation");
+    }
+    return (-11 * y + 18 * yh - 9 * y2h + 2 * y3h) / (6 * h);
+  } else {
+    stop("Insufficient range: high - low < 6 * %f", h);
+  }
+}
+
+}
+}
+}
+
 double dcbbinom_(
     const double& x,
     const double& size,
@@ -86,23 +148,20 @@ double dcbbinom_(
       return 0.0;
     }
   }
-  // Compute derivative on log(pcbbinom_)
+  // Compute derivative on pcbbinom_
   auto f = [&size, &alpha, &beta, &tol, &max_iter, &prec](double x) {
-    return pcbbinom_(x, size, alpha, beta, true, true, tol, max_iter, prec);
+    return pcbbinom_(x, size, alpha, beta, true, false, tol, max_iter, prec);
   };
-  double out = boost::math::differentiation::finite_difference_derivative(f, x);
+  double out = boost::math::differentiation::finite_difference_derivative_bound(f, x, 0.0, size + 1.0);
   if (out < 0.0) {
-    warning("d[pcbbinom(x = %f, size = %f, alpha = %f, beta = %f, log = TRUE)]/dx \
-              is negative: %f, which is set to 0; please consider using \
-              higher [prec] level than %f\n",
-            x, size, alpha, beta, out, prec);
-    out = R_NegInf;
-  } else {
-    // Compute log result: log(d(log(pcbbinom_))/dx) + log(pcbbinom_)
-    out = std::log(out) + f(x);
+    warning("d[pcbbinom(q = %f, size = %f, alpha = %f, beta = %f)]/dq = %f < 0, \
+              which is set to 0, since probability density cannot be negative; \
+              you may use a higher [prec] level than %f",
+              x, size, alpha, beta, out, prec);
+    out = 0.0;
   }
-  if (log == false) {
-    out = std::exp(out);
+  if (log == true) {
+    out = std::log(out);
   }
   return out;
 }

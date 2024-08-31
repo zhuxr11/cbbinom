@@ -17,7 +17,7 @@ dcbbinom(
   log = FALSE,
   tol = NULL,
   max_iter = 10000L,
-  prec = 20
+  prec = 0
 )
 
 pcbbinom(
@@ -30,7 +30,7 @@ pcbbinom(
   log.p = FALSE,
   tol = NULL,
   max_iter = 10000L,
-  prec = 20
+  prec = 0
 )
 
 qcbbinom(
@@ -43,7 +43,7 @@ qcbbinom(
   log.p = FALSE,
   p_tol = NULL,
   p_max_iter = 10000L,
-  p_prec = 20,
+  p_prec = 0,
   root_tol = 1e-06,
   root_max_iter = 10000L
 )
@@ -56,7 +56,7 @@ rcbbinom(
   ncp = 0,
   p_tol = NULL,
   p_max_iter = 10000L,
-  p_prec = 20,
+  p_prec = 0,
   root_tol = 1e-06,
   root_max_iter = 10000L
 )
@@ -124,8 +124,8 @@ discrete beta-binomial but shifted slightly to the right. The support of the con
 beta-binomial is \code{[0, size + 1]}, and the mean is approximately
 \code{size * alpha / (alpha + beta) + 1/2}.
 
-Supplying \code{ncp} moves the support of beta-binomial to \code{[ncp, size + 1 + ncp]}, e.g.
-for the continuous beta-binomial with non-shifted mean, use \code{ncp = -0.5}.
+Supplying \code{ncp != 0} moves the support of beta-binomial to \code{[ncp, size + 1 + ncp]}. For example,
+to build a continuous beta-binomial with approximately non-shifted mean, use \code{ncp = -0.5}.
 }
 \note{
 Change log:
@@ -135,16 +135,6 @@ Change log:
 add \code{NULL} default tolerance, and add precision parameters.}
 }
 }
-\section{Numerical computation of the density function}{
-
-For simplicity, the density function is computed numerically through differentiation.
-To achieve higher numerical resolution (given that \eqn{d\ln{u}/du>1,0<u<1}), it is computed as:
-\deqn{p(x|n,\alpha,\beta)=\frac{\partial{P(x|n,\alpha,\beta)}}{\partial{x}}=\frac{\partial\exp[\ln{P(x|n,\alpha,\beta)}]}{\partial{x}}}
-When simplified, it becomes:
-\deqn{p(x|n,\alpha,\beta)=\frac{\partial\exp[\ln{P(x|n,\alpha,\beta)}]}{\partial\ln{P(x|n,\alpha,\beta)}}\frac{\partial\ln{P(x|n,\alpha,\beta)}}{\partial{x}}=\frac{\partial\ln{P(x|n,\alpha,\beta)}}{\partial{x}}P(x|n,\alpha,\beta),}
-where the first term is computed numerically and the second term is the distribution function.
-}
-
 \examples{
 # Density function
 dcbbinom(x = 5, size = 10, alpha = 2, beta = 4)
