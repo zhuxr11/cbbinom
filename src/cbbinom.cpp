@@ -13,6 +13,7 @@ using namespace Rcpp;
 #define GETV(x, i)      x(i % x.length())    // wrapped indexing of vector
 #define GETM(x, i, j)   x(i % x.nrow(), j)   // wrapped indexing of matrix
 #define VALID_PROB(p)   ((p >= 0.0) && (p <= 1.0))
+#define VALID_PARAM(x, size, alpha, beta) ((x >= 0.0) && (x <= size + 1.0) && (size >= 0.0) && (alpha > 0.0) && (beta > 0.0))
 #endif // CBBINOM_MACROS
 
 template <typename T1, typename T2>
@@ -38,6 +39,11 @@ double pcbbinom_(
     const int& max_iter,
     const Nullable<IntegerVector>& prec
 ) {
+  if (VALID_PARAM(q, size, alpha, beta) == false) {
+    warning("Invalid parameter set: q = %f, size = %f, alpha = %f, beta = %f; returing NaN",
+            q, size, alpha, beta);
+    return R_NaN;
+  }
   if (q < 0.0) {
     if (log_p == true) {
       return R_NegInf;
@@ -141,6 +147,11 @@ double dcbbinom_(
     const int& max_iter,
     const Nullable<IntegerVector>& prec
 ) {
+  if (VALID_PARAM(x, size, alpha, beta) == false) {
+    warning("Invalid parameter set: x = %f, size = %f, alpha = %f, beta = %f; returing NaN",
+            x, size, alpha, beta);
+    return R_NaN;
+  }
   if ((x < 0.0) || (x > size + 1.0)) {
     if (log == true) {
       return R_NegInf;
@@ -211,7 +222,12 @@ double qcbbinom_(
     p = std::exp(p);
   }
   if (VALID_PROB(p) == false) {
-    warning("Wrong [p] as probability: %f, returning NA", p);
+    warning("Wrong [p] as probability: %f; returning NaN", p);
+    return R_NaN;
+  }
+  if (VALID_PARAM(0.0, size, alpha, beta) == false) {
+    warning("Invalid parameter set: size = %f, alpha = %f, beta = %f; returing NaN",
+            size, alpha, beta);
     return R_NaN;
   }
   if (lower_tail == false) {
