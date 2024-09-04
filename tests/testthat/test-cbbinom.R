@@ -5,7 +5,7 @@ library(extraDistr)
 test_size <- 10
 test_alpha <- 2
 test_beta <- 4
-test_delta <- 1e-3
+test_delta <- 1e-6
 test_tol <- NULL
 test_prec <- 20
 test_root_tol <- 1e-6
