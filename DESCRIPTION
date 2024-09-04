@@ -19,3 +19,4 @@ LinkingTo:
     Rcpp
 Imports: 
     Rcpp
+SystemRequirements: gmp, mpfr

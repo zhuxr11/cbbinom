@@ -9,7 +9,7 @@ double gen_hypergeo(const NumericVector& U,
                     const double& x,
                     const Nullable<NumericVector>& tol,
                     const R_xlen_t& max_iter,
-                    const double& prec,
+                    const Nullable<IntegerVector>& prec,
                     const bool& check_mode,
                     const bool& log);
 

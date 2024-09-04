@@ -31,9 +31,11 @@
 #' @param alpha,beta non-negative parameters of the Beta distribution.
 #' @inheritParams stats::Binomial
 #' @inheritParams stats::Beta
-#' @param tol,max_iter,prec arguments passed on to \code{\link{gen_hypergeo}}.
+#' @param tol,max_iter,prec arguments passed on to \code{\link{gen_hypergeo}},
+#' vectorized along with distribution parameters.
 #' @param p_tol,p_max_iter,p_prec same as \code{tol}, \code{max_iter} and \code{prec}.
-#' @param root_tol,root_max_iter arguments passed on to \code{\link[stats]{uniroot}}.
+#' @param root_tol,root_max_iter arguments passed on to \code{\link[stats]{uniroot}},
+#' vectorized along with distribution parameters.
 #'
 #' @return
 #' \code{dcbbinom} gives the density, \code{pcbbinom} the distribution function,
@@ -75,7 +77,7 @@ NULL
 #' @export
 #' @rdname cbbinom
 dcbbinom <- function(x, size, alpha = 1, beta = 1, ncp = 0, log = FALSE,
-                     tol = NULL, max_iter = 10000L, prec = 0) {
+                     tol = NULL, max_iter = 10000L, prec = NULL) {
   p <- cpp_dcbbinom(x = as.numeric(x - ncp),
                     size = as.numeric(size),
                     alpha = as.numeric(alpha),
@@ -83,7 +85,7 @@ dcbbinom <- function(x, size, alpha = 1, beta = 1, ncp = 0, log = FALSE,
                     log = TRUE,
                     tol = if (is.null(tol) == TRUE) NULL else as.numeric(tol),
                     max_iter = as.integer(max_iter),
-                    prec = as.numeric(prec))
+                    prec = if (is.null(prec) == TRUE) NULL else as.integer(prec))
   p[is.na(p) == TRUE] <- -Inf
   if (log == FALSE) {
     p <- exp(p)
@@ -96,7 +98,7 @@ dcbbinom <- function(x, size, alpha = 1, beta = 1, ncp = 0, log = FALSE,
 #' @rdname cbbinom
 pcbbinom <- function(q, size, alpha = 1, beta = 1, ncp = 0,
                      lower.tail = TRUE, log.p = FALSE,
-                     tol = NULL, max_iter = 10000L, prec = 0) {
+                     tol = NULL, max_iter = 10000L, prec = NULL) {
   cpp_pcbbinom(q = as.numeric(q - ncp),
                size = as.numeric(size),
                alpha = as.numeric(alpha),
@@ -105,7 +107,7 @@ pcbbinom <- function(q, size, alpha = 1, beta = 1, ncp = 0,
                log_p = as.logical(log.p[[1L]]),
                tol = if (is.null(tol) == TRUE) NULL else as.numeric(tol),
                max_iter = as.integer(max_iter),
-               prec = as.numeric(prec))
+               prec = if (is.null(prec) == TRUE) NULL else as.integer(prec))
 }
 
 #' @aliases qcbbinom
@@ -113,7 +115,7 @@ pcbbinom <- function(q, size, alpha = 1, beta = 1, ncp = 0,
 #' @rdname cbbinom
 qcbbinom <- function(p, size, alpha = 1, beta = 1, ncp = 0,
                      lower.tail = TRUE, log.p = FALSE,
-                     p_tol = NULL, p_max_iter = 10000L, p_prec = 0,
+                     p_tol = NULL, p_max_iter = 10000L, p_prec = NULL,
                      root_tol = 1e-6, root_max_iter = 10000L) {
   cpp_qcbbinom(p = as.numeric(p),
                size = as.numeric(size),
@@ -123,7 +125,7 @@ qcbbinom <- function(p, size, alpha = 1, beta = 1, ncp = 0,
                log_p = as.logical(log.p[[1L]]),
                p_tol = if (is.null(p_tol) == TRUE) NULL else as.numeric(p_tol),
                p_max_iter = as.integer(p_max_iter),
-               p_prec = as.numeric(p_prec),
+               p_prec = if (is.null(p_prec) == TRUE) NULL else as.integer(p_prec),
                root_tol = as.numeric(root_tol),
                root_max_iter = as.integer(root_max_iter)) + ncp
 }
@@ -132,7 +134,7 @@ qcbbinom <- function(p, size, alpha = 1, beta = 1, ncp = 0,
 #' @export
 #' @rdname cbbinom
 rcbbinom <- function(n, size, alpha = 1, beta = 1, ncp = 0,
-                     p_tol = NULL, p_max_iter = 10000L, p_prec = 0,
+                     p_tol = NULL, p_max_iter = 10000L, p_prec = NULL,
                      root_tol = 1e-6, root_max_iter = 10000L) {
   cpp_rcbbinom(n = as.integer(n[[1L]]),
                size = as.numeric(size),
@@ -140,7 +142,7 @@ rcbbinom <- function(n, size, alpha = 1, beta = 1, ncp = 0,
                beta = as.numeric(beta),
                p_tol = if (is.null(p_tol) == TRUE) NULL else as.numeric(p_tol),
                p_max_iter = as.integer(p_max_iter),
-               p_prec = as.numeric(p_prec),
+               p_prec = if (is.null(p_prec) == TRUE) NULL else as.integer(p_prec),
                root_tol = as.numeric(root_tol),
                root_max_iter = as.integer(root_max_iter)) + ncp
 }

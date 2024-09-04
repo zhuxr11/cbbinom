@@ -18,14 +18,9 @@ usually use the epsilon for \code{long double}).}
 
 \item{max_iter}{Integer (1L) as iteration limit.}
 
-\item{prec}{Numeric (1L) as precision level during computation,
-a.k.a the number of precise digits defined in \code{boost::multiprecision::cpp_bin_float}.
-For level 0, \code{double} precision is used. For level 20, the precision is slightly
-higher than \code{long double}
-(\code{.Machine[["longdouble.eps"]] = 1.084202e-19}).
-Higher levels include 25/30/35/.../50. The higher the accuracy,
-the slower the computation. For an input other than these values, the lowest level
-greater than the input is used, up to 50.}
+\item{prec}{\code{NULL} or (unsigned) integer (1L) as precision level during computation,
+a.k.a the number of precise digits defined in \code{boost::multiprecision::mpfr_float}.
+For \code{NULL}, double precision (default) is used.}
 
 \item{check_mode}{Logical (1L) indicating whether the mode of \code{x}
 should be checked for obvious convergence failures.}
@@ -48,7 +43,7 @@ Change log:
 }
 \examples{
 gen_hypergeo(U = c(1.1, 0.2, 0.3), L = c(10.1, 4 * pi), x = 1,
-             tol = NULL, max_iter = 10000L, prec = 20, check_mode = TRUE, log = FALSE)
+             tol = NULL, max_iter = 10000L, prec = NULL, check_mode = TRUE, log = FALSE)
 }
 \author{
 Xiurui Zhu

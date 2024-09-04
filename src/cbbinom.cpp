@@ -20,7 +20,7 @@ Nullable<T2> nullable_getv(const Nullable<T1>& x, const int& idx) {
   if (x.isNull()) {
     return R_NilValue;
   }
-  T2 x_vec = as<NumericVector>(x);
+  T2 x_vec = as<T2>(x);
   T2 out(1, GETV(x_vec, idx));
   return out;
 }
@@ -36,7 +36,7 @@ double pcbbinom_(
     const bool& log_p,
     const Nullable<NumericVector>& tol,
     const int& max_iter,
-    const double& prec
+    const Nullable<IntegerVector>& prec
 ) {
   if (q < 0.0) {
     if (log_p == true) {
@@ -139,7 +139,7 @@ double dcbbinom_(
     const bool& log,
     const Nullable<NumericVector>& tol,
     const int& max_iter,
-    const double& prec
+    const Nullable<IntegerVector>& prec
 ) {
   if ((x < 0.0) || (x > size + 1.0)) {
     if (log == true) {
@@ -174,12 +174,12 @@ private:
   double beta;
   Nullable<NumericVector> tol;
   int max_iter;
-  double prec;
+  Nullable<IntegerVector> prec;
   double p;
 public:
   PcbbinomEqn(const double size_, const double alpha_, const double beta_,
               const Nullable<NumericVector> tol_, const int max_iter_,
-              const double prec_, const double p_):
+              const Nullable<IntegerVector> prec_, const double p_):
     size(size_), alpha(alpha_), beta(beta_),
     tol(tol_), max_iter(max_iter_), prec(prec_), p(p_) {};
   double operator () (const double& x) const override {
@@ -198,7 +198,7 @@ double qcbbinom_(
     const bool& log_p,
     const Nullable<NumericVector>& p_tol,
     const int& p_max_iter,
-    const double& p_prec,
+    const Nullable<IntegerVector>& p_prec,
     double root_tol,
     int root_max_iter
 ) {
@@ -230,7 +230,7 @@ NumericVector cpp_pcbbinom(
     const bool& log_p,
     const Nullable<NumericVector>& tol,
     const IntegerVector& max_iter,
-    const NumericVector& prec
+    const Nullable<IntegerVector>& prec
 ) {
   if (std::min({q.length(), size.length(),
                alpha.length(), beta.length()}) < 1) {
@@ -255,7 +255,7 @@ NumericVector cpp_pcbbinom(
       false,  // log_p
       nullable_getv<NumericVector, NumericVector>(tol, idx),
       GETV(max_iter, idx),
-      GETV(prec, idx)
+      nullable_getv<IntegerVector, IntegerVector>(prec, idx)
     );
   }
 
@@ -279,7 +279,7 @@ NumericVector cpp_qcbbinom(
     const bool& log_p,
     const Nullable<NumericVector>& p_tol,
     const IntegerVector& p_max_iter,
-    const NumericVector& p_prec,
+    const Nullable<IntegerVector>& p_prec,
     const NumericVector& root_tol,
     const IntegerVector& root_max_iter
 ) {
@@ -316,7 +316,7 @@ NumericVector cpp_qcbbinom(
       false,  // log_p
       nullable_getv<NumericVector, NumericVector>(p_tol, idx),
       GETV(p_max_iter, idx),
-      GETV(p_prec, idx),
+      nullable_getv<IntegerVector, IntegerVector>(p_prec, idx),
       GETV(root_tol_, idx),
       GETV(root_max_iter_, idx)
     );
@@ -334,7 +334,7 @@ NumericVector cpp_dcbbinom(
     const bool& log,
     const Nullable<NumericVector>& tol,
     const IntegerVector& max_iter,
-    const NumericVector& prec
+    const Nullable<IntegerVector>& prec
 ) {
   if (std::min({x.length(), size.length(),
                alpha.length(), beta.length()}) < 1) {
@@ -358,7 +358,7 @@ NumericVector cpp_dcbbinom(
       true,
       nullable_getv<NumericVector, NumericVector>(tol, i),
       GETV(max_iter, i),
-      GETV(prec, i)
+      nullable_getv<IntegerVector, IntegerVector>(prec, i)
     );
   }
   if (log == false) {
@@ -376,7 +376,7 @@ NumericVector cpp_rcbbinom(
   const NumericVector& beta,
   const Nullable<NumericVector>& p_tol,
   const IntegerVector& p_max_iter,
-  const NumericVector& p_prec,
+  const Nullable<IntegerVector>& p_prec,
   const NumericVector& root_tol,
   const IntegerVector& root_max_iter
 ) {
@@ -388,7 +388,7 @@ NumericVector cpp_rcbbinom(
 plot(seq(0, 11, 0.01),
      cpp_pcbbinom(q = seq(0, 11, 0.01), size = 10, alpha = 2, beta = 4,
                   lower_tail = TRUE, log_p = FALSE,
-                  tol = NULL, max_iter = 10000L, prec = 0))
+                  tol = NULL, max_iter = 10000L, prec = NULL))
 # Density function
 cpp_dcbbinom(x = 5, size = 10, alpha = 2, beta = 4,
              log = FALSE, tol = NULL, max_iter = 10000L, prec = 20)

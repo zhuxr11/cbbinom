@@ -1,6 +1,6 @@
 #include "hypergeo.h"
 #include "boost/math/special_functions/hypergeometric_pFq.hpp"
-#include "boost/multiprecision/cpp_bin_float.hpp"
+#include "boost/multiprecision/gmp.hpp"
 #include <Rcpp.h>
 using namespace Rcpp;
 
@@ -19,22 +19,21 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
     const Policy& pol,
     const Real& tol,
     const Terminal& termination,
-    long long& log_scale
-) {
+    int& log_scale)
+{
   BOOST_MATH_STD_USING
   Real result = 1;
   Real abs_result = 1;
   Real term = 1;
   Real term0 = 0;
   // Real tol = boost::math::policies::get_epsilon<Real, Policy>();
-  std::uintmax_t k = 0;
+  boost::uintmax_t k = 0;
   Real upper_limit(sqrt(boost::math::tools::max_value<Real>())), diff;
   Real lower_limit(1 / upper_limit);
-  long long log_scaling_factor = lltrunc(boost::math::tools::log_max_value<Real>()) - 2;
+  int log_scaling_factor = itrunc(boost::math::tools::log_max_value<Real>()) - 2;
   Real scaling_factor = exp(Real(log_scaling_factor));
   Real term_m1;
-  long long local_scaling = 0;
-  bool have_no_correct_bits = false;
+  int local_scaling = 0;
 
   if ((aj.size() == 1) && (bj.size() == 0))
   {
@@ -42,17 +41,10 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
     {
       if ((z > 0) && (floor(*aj.begin()) != *aj.begin()))
       {
-        Real r = policies::raise_domain_error(
-          "boost::math::hypergeometric_pFq",
-          "Got p == 1 and q == 0 and |z| > 1, result is imaginary",
-          z,
-          pol
-        );
+        Real r = policies::raise_domain_error("boost::math::hypergeometric_pFq", "Got p == 1 and q == 0 and |z| > 1, result is imaginary", z, pol);
         return std::make_pair(r, r);
       }
-      std::pair<Real, Real> r = hypergeometric_pFq_checked_series_impl(
-        aj, bj, Real(1 / z), pol, termination, log_scale
-      );
+      std::pair<Real, Real> r = hypergeometric_pFq_checked_series_impl(aj, bj, Real(1 / z), pol, termination, log_scale);
       Real mul = pow(-z, -*aj.begin());
       r.first *= mul;
       r.second *= mul;
@@ -66,12 +58,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
     {
       if (fabs(z) > 1)
       {
-        Real r = policies::raise_domain_error(
-          "boost::math::hypergeometric_pFq",
-          "Got p == q+1 and |z| > 1, series does not converge",
-          z,
-          pol
-        );
+        Real r = policies::raise_domain_error("boost::math::hypergeometric_pFq", "Got p == q+1 and |z| > 1, series does not converge", z, pol);
         return std::make_pair(r, r);
       }
       if (fabs(z) == 1)
@@ -83,34 +70,19 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
           s -= *i;
         if ((z == 1) && (s <= 0))
         {
-          Real r = policies::raise_domain_error(
-            "boost::math::hypergeometric_pFq",
-            "Got p == q+1 and |z| == 1, in a situation where the series does not converge",
-            z,
-            pol
-          );
+          Real r = policies::raise_domain_error("boost::math::hypergeometric_pFq", "Got p == q+1 and |z| == 1, in a situation where the series does not converge", z, pol);
           return std::make_pair(r, r);
         }
         if ((z == -1) && (s <= -1))
         {
-          Real r = policies::raise_domain_error(
-            "boost::math::hypergeometric_pFq",
-            "Got p == q+1 and |z| == 1, in a situation where the series does not converge",
-            z,
-            pol
-          );
+          Real r = policies::raise_domain_error("boost::math::hypergeometric_pFq", "Got p == q+1 and |z| == 1, in a situation where the series does not converge", z, pol);
           return std::make_pair(r, r);
         }
       }
     }
     else
     {
-      Real r = policies::raise_domain_error(
-        "boost::math::hypergeometric_pFq",
-        "Got p > q+1, series does not converge",
-        z,
-        pol
-      );
+      Real r = policies::raise_domain_error("boost::math::hypergeometric_pFq", "Got p > q+1, series does not converge", z, pol);
       return std::make_pair(r, r);
     }
   }
@@ -131,12 +103,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
       if (*bi + k == 0)
       {
         // The series is undefined:
-        result = boost::math::policies::raise_domain_error(
-          "boost::math::hypergeometric_pFq<%1%>",
-          "One of the b values was the negative integer %1%",
-          *bi,
-          pol
-        );
+        result = boost::math::policies::raise_domain_error("boost::math::hypergeometric_pFq<%1%>", "One of the b values was the negative integer %1%", *bi, pol);
         return std::make_pair(result, result);
       }
       term /= *bi + k;
@@ -173,25 +140,10 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
       break;
     if (abs_result * tol > abs(result))
     {
-      // Check if result is so small compared to abs_resuslt that there are no longer any
-      // correct bits... we require two consecutive passes here before aborting to
-      // avoid false positives when result transiently drops to near zero then rebounds.
-      if (have_no_correct_bits)
-      {
-        // We have no correct bits in the result... just give up!
-        result = boost::math::policies::raise_evaluation_error(
-          "boost::math::hypergeometric_pFq<%1%>",
-          "Cancellation is so severe that no bits in the reuslt are correct, last result was %1%",
-          Real(result * exp(Real(log_scale))),
-          pol
-        );
-        return std::make_pair(result, result);
-      }
-      else
-        have_no_correct_bits = true;
+      // We have no correct bits in the result... just give up!
+      result = boost::math::policies::raise_evaluation_error("boost::math::hypergeometric_pFq<%1%>", "Cancellation is so severe that no bits in the reuslt are correct, last result was %1%", Real(result * exp(Real(log_scale))), pol);
+      return std::make_pair(result, result);
     }
-    else
-      have_no_correct_bits = false;
     term0 = term;
   }
   //std::cout << "result = " << result << std::endl;
@@ -201,13 +153,9 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
   // We have to be careful when one of the b's crosses the origin:
   //
   if(bj.size() > BOOST_MATH_PFQ_MAX_B_TERMS)
-    policies::raise_domain_error<Real>(
-      "boost::math::hypergeometric_pFq<%1%>(Seq, Seq, %1%)",
-      "The number of b terms must be less than the value of BOOST_MATH_PFQ_MAX_B_TERMS (" \
-      BOOST_STRINGIZE(BOOST_MATH_PFQ_MAX_B_TERMS)  "), but got %1%.",
-      Real(bj.size()),
-      pol
-    );
+    policies::raise_domain_error<Real>("boost::math::hypergeometric_pFq<%1%>(Seq, Seq, %1%)",
+                                       "The number of b terms must be less than the value of BOOST_MATH_PFQ_MAX_B_TERMS (" BOOST_STRINGIZE(BOOST_MATH_PFQ_MAX_B_TERMS)  "), but got %1%.",
+                                       Real(bj.size()), pol);
 
   unsigned crossover_locations[BOOST_MATH_PFQ_MAX_B_TERMS];
 
@@ -221,8 +169,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
     {
       for (auto ai = aj.begin(); ai != aj.end(); ++ai)
       {
-        if ((*ai < 0) && (floor(*ai) == *ai) &&
-            (*ai > static_cast<decltype(*ai)>(crossover_locations[n])))
+        if ((*ai < 0) && (floor(*ai) == *ai) && (*ai > crossover_locations[n]))
           return std::make_pair(result, abs_result);  // b's will never cross the origin!
       }
       //
@@ -230,7 +177,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
       //
       Real loop_result = 0;
       Real loop_abs_result = 0;
-      long long loop_scale = 0;
+      int loop_scale = 0;
       //
       // loop_error_scale will be used to increase the size of the error
       // estimate (absolute sum), based on the errors inherent in calculating
@@ -243,12 +190,12 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
       // so we need to jump forward to that term and then evaluate forwards and backwards from there:
       //
       unsigned s = crossover_locations[n];
-      std::uintmax_t backstop = k;
-      long long s1(1), s2(1);
+      boost::uintmax_t backstop = k;
+      int s1(1), s2(1);
       term = 0;
       for (auto ai = aj.begin(); ai != aj.end(); ++ai)
       {
-        if ((floor(*ai) == *ai) && (*ai < 0) && (-*ai <= static_cast<decltype(*ai)>(s)))
+        if ((floor(*ai) == *ai) && (*ai < 0) && (-*ai <= s))
         {
           // One of the a terms has passed through zero and terminated the series:
           terminate = true;
@@ -307,7 +254,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
       if (term <= tools::log_min_value<Real>())
       {
         // rescale if we can:
-        long long scale = lltrunc(floor(term - tools::log_min_value<Real>()) - 2);
+        int scale = itrunc(floor(term - tools::log_min_value<Real>()) - 2);
         term -= scale;
         loop_scale += scale;
       }
@@ -323,7 +270,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
       //std::cout << "loop_scale = " << loop_scale << std::endl;
       k = s;
       term0 = term;
-      long long saved_loop_scale = loop_scale;
+      int saved_loop_scale = loop_scale;
       bool terms_are_growing = true;
       bool trivial_small_series_check = false;
       do
@@ -360,12 +307,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
           if (*bi + k == 0)
           {
             // The series is undefined:
-            result = boost::math::policies::raise_domain_error(
-              "boost::math::hypergeometric_pFq<%1%>",
-              "One of the b values was the negative integer %1%",
-              *bi,
-              pol
-            );
+            result = boost::math::policies::raise_domain_error("boost::math::hypergeometric_pFq<%1%>", "One of the b values was the negative integer %1%", *bi, pol);
             return std::make_pair(result, result);
           }
           term /= *bi + k;
@@ -386,7 +328,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
           Real d;
           if (loop_scale > local_scaling)
           {
-            long long rescale = local_scaling - loop_scale;
+            int rescale = local_scaling - loop_scale;
             if (rescale < tools::log_min_value<Real>())
               d = 1;  // arbitrary value, we want to keep going
             else
@@ -394,7 +336,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
           }
           else
           {
-            long long rescale = loop_scale - local_scaling;
+            int rescale = loop_scale - local_scaling;
             if (rescale < tools::log_min_value<Real>())
               d = 0;  // terminate this loop
             else
@@ -411,14 +353,14 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
       // local results we have now.  First though, rescale abs_result by loop_error_scale
       // to factor in the error in the pochhammer terms at the start of this block:
       //
-      std::uintmax_t next_backstop = k;
+      boost::uintmax_t next_backstop = k;
       loop_abs_result += loop_error_scale * fabs(loop_result);
       if (loop_scale > local_scaling)
       {
         //
         // Need to shrink previous result:
         //
-        long long rescale = local_scaling - loop_scale;
+        int rescale = local_scaling - loop_scale;
         local_scaling = loop_scale;
         log_scale -= rescale;
         Real ex = exp(Real(rescale));
@@ -432,7 +374,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
         //
         // Need to shrink local result:
         //
-        long long rescale = loop_scale - local_scaling;
+        int rescale = loop_scale - local_scaling;
         Real ex = exp(Real(rescale));
         loop_result *= ex;
         loop_abs_result *= ex;
@@ -468,12 +410,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
           if (*bi + k == 0)
           {
             // The series is undefined:
-            result = boost::math::policies::raise_domain_error(
-              "boost::math::hypergeometric_pFq<%1%>",
-              "One of the b values was the negative integer %1%",
-              *bi,
-              pol
-            );
+            result = boost::math::policies::raise_domain_error("boost::math::hypergeometric_pFq<%1%>", "One of the b values was the negative integer %1%", *bi, pol);
             return std::make_pair(result, result);
           }
           term *= *bi + k;
@@ -493,7 +430,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
           Real d;
           if (loop_scale > local_scaling)
           {
-            long long rescale = local_scaling - loop_scale;
+            int rescale = local_scaling - loop_scale;
             if (rescale < tools::log_min_value<Real>())
               d = 1;  // keep going
             else
@@ -501,7 +438,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
           }
           else
           {
-            long long rescale = loop_scale - local_scaling;
+            int rescale = loop_scale - local_scaling;
             if (rescale < tools::log_min_value<Real>())
               d = 0;  // stop, underflow
             else
@@ -542,7 +479,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
         //
         // Need to shrink previous result:
         //
-        long long rescale = local_scaling - loop_scale;
+        int rescale = local_scaling - loop_scale;
         local_scaling = loop_scale;
         log_scale -= rescale;
         Real ex = exp(Real(rescale));
@@ -556,7 +493,7 @@ std::pair<Real, Real> hypergeometric_pFq_checked_series_impl(
         //
         // Need to shrink local result:
         //
-        long long rescale = loop_scale - local_scaling;
+        int rescale = loop_scale - local_scaling;
         Real ex = exp(Real(rescale));
         loop_result *= ex;
         loop_abs_result *= ex;
@@ -604,7 +541,7 @@ inline typename tools::promote_args<Real, typename Seq::value_type>::type hyperg
   BOOST_MATH_STD_USING
 
   detail::iteration_terminator termin_obj(max_iter);
-  long long scale = 0;
+  int scale = 0;
   std::pair<value_type, value_type> r = boost::math::detail::hypergeometric_pFq_checked_series_impl(
     aj, bj, value_type(z), pol, tol_, termin_obj, scale
   );
@@ -633,26 +570,19 @@ std::vector<T3> conv_vec_prec(const T1& x) {
   return out;
 }
 
-#ifndef HYPERGEO_PREC
-#define HYPERGEO_PREC
-#define HYPERGEO_PREC_RAW(type)                                \
-  type x_ = x;                                                 \
-  std::vector<type> U_ = conv_vec_prec<NumericVector, double, type>(U);     \
-  std::vector<type> L_ = conv_vec_prec<NumericVector, double, type>(L);     \
-  type p_abs_error;                                            \
-  type tol__ = tol_;                                           \
-  type out_ = boost::math::hypergeometric_pFq(                 \
-    U_, L_, x_, &p_abs_error, MyPol(), tol__, max_iter         \
-  );
-#define HYPERGEO_PREC_NOCONV(type)                             \
-  HYPERGEO_PREC_RAW(type)                                      \
-  out = out_;
-#define HYPERGEO_PREC_CONV(type_def, type)                     \
-  typedef typename type_def type;                              \
-  HYPERGEO_PREC_RAW(type)                                      \
-  out = out_.convert_to<double>();
-#endif // HYPERGEO_PREC
-
+typedef typename boost::multiprecision::number<boost::multiprecision::backends::gmp_float<0>> prec_float;
+struct scoped_precision
+{
+  unsigned p;
+  scoped_precision(unsigned new_p) : p(prec_float::default_precision())
+  {
+    prec_float::default_precision(new_p);
+  }
+  ~scoped_precision()
+  {
+    prec_float::default_precision(p);
+  }
+};
 
 // [[Rcpp::interfaces(r, cpp)]]
 //' Generalized hypergeometric function
@@ -666,14 +596,9 @@ std::vector<T3> conv_vec_prec(const T1& x) {
 //' \code{boost::math::tools::promote_args} (e.g. for \code{double} input,
 //' usually use the epsilon for \code{long double}).
 //' @param max_iter Integer (1L) as iteration limit.
-//' @param prec Numeric (1L) as precision level during computation,
-//' a.k.a the number of precise digits defined in \code{boost::multiprecision::cpp_bin_float}.
-//' For level 0, \code{double} precision is used. For level 20, the precision is slightly
-//' higher than \code{long double}
-//' (\code{.Machine[["longdouble.eps"]] = `r format(.Machine[["longdouble.eps"]], scientific = TRUE)`}).
-//' Higher levels include 25/30/35/.../50. The higher the accuracy,
-//' the slower the computation. For an input other than these values, the lowest level
-//' greater than the input is used, up to 50.
+//' @param prec \code{NULL} or (unsigned) integer (1L) as precision level during computation,
+//' a.k.a the number of precise digits defined in \code{boost::multiprecision::mpfr_float}.
+//' For \code{NULL}, double precision (default) is used.
 //' @param check_mode Logical (1L) indicating whether the mode of \code{x}
 //' should be checked for obvious convergence failures.
 //' @param log Logical (1L) indicating whether result is given as log(result).
@@ -692,14 +617,14 @@ std::vector<T3> conv_vec_prec(const T1& x) {
 //'
 //' @examples
 //' gen_hypergeo(U = c(1.1, 0.2, 0.3), L = c(10.1, 4 * pi), x = 1,
-//'              tol = NULL, max_iter = 10000L, prec = 20, check_mode = TRUE, log = FALSE)
+//'              tol = NULL, max_iter = 10000L, prec = NULL, check_mode = TRUE, log = FALSE)
 // [[Rcpp::export]]
 double gen_hypergeo(const NumericVector& U,
                     const NumericVector& L,
                     const double& x,
                     const Nullable<NumericVector>& tol,
                     const R_xlen_t& max_iter,
-                    const double& prec,
+                    const Nullable<IntegerVector>& prec,
                     const bool& check_mode,
                     const bool& log) {
   // Check inputs
@@ -724,22 +649,24 @@ double gen_hypergeo(const NumericVector& U,
   // Main code
   typedef typename boost::math::policies::policy<> MyPol;
   double out = R_NaN;
-  if (prec <= 0.0) {
-    HYPERGEO_PREC_NOCONV(double)
-  } else if (prec <= 20.0) {
-    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<20>>, cpp_bin_float_custom)
-  } else if (prec <= 25.0) {
-    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<25>>, cpp_bin_float_custom)
-  } else if (prec <= 30.0) {
-    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<30>>, cpp_bin_float_custom)
-  } else if (prec <= 35.0) {
-    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<35>>, cpp_bin_float_custom0)
-  } else if (prec <= 40.0) {
-    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<40>>, cpp_bin_float_custom)
-  } else if (prec <= 45.0) {
-    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<45>>, cpp_bin_float_custom)
+  if (prec.isNull()) {
+    double p_abs_error;
+    out = boost::math::hypergeometric_pFq(U, L, x, &p_abs_error, MyPol(), tol_, max_iter);
   } else {
-    HYPERGEO_PREC_CONV(boost::multiprecision::number<boost::multiprecision::cpp_bin_float<50>>, cpp_bin_float_custom)
+    IntegerVector prec_ = as<IntegerVector>(prec);
+    unsigned int prec_use = (unsigned) prec_(0);
+    // prec_float::default_precision(prec_use);
+    // prec_float::default_variable_precision_options(boost::multiprecision::variable_precision_options::preserve_target_precision);
+    scoped_precision scoped(prec_use);
+    prec_float x_ = x;
+    std::vector<prec_float> U_ = conv_vec_prec<NumericVector, double, prec_float>(U);
+    std::vector<prec_float> L_ = conv_vec_prec<NumericVector, double, prec_float>(L);
+    prec_float p_abs_error;
+    prec_float tol__ = tol_;
+    prec_float out_ = boost::math::hypergeometric_pFq(
+      U_, L_, x_, &p_abs_error, MyPol(), tol__, max_iter
+    );
+    out = static_cast<double>(out_);
   }
   if (log == true) {
     return std::log(out);
@@ -750,5 +677,5 @@ double gen_hypergeo(const NumericVector& U,
 
 /*** R
 gen_hypergeo(U = c(1.1, 0.2, 0.3), L = c(10.1, 4 * pi), x = 1,
-             tol = NULL, max_iter = 10000L, prec = 0, check_mode = TRUE, log = FALSE)
+             tol = NULL, max_iter = 10000L, prec = NULL, check_mode = TRUE, log = FALSE)
 */

@@ -14,6 +14,8 @@
 
 * Add precision level in generalized hypergeometric functions for flexible trade-off of computational accuracy and time.
 
+* Use `mpfr` library to evaluate `gen_hypergeo()` at user-defined accuracy.
+
 
 # cbbinom 0.1.0
 

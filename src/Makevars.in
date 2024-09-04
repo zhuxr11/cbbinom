@@ -1,0 +1,5 @@
+CBBINOM_MPFR_ROOT ?= usr/local
+CBBINOM_GMP_ROOT ?= usr/local
+
+PKG_CPPFLAGS = -I"${CBBINOM_MPFR_ROOT}/include" -I"${CBBINOM_GMP_ROOT}/include"
+PKG_LIBS = -L"${CBBINOM_MPFR_ROOT}/lib" -L"${CBBINOM_GMP_ROOT}/lib" -lmpfr -lgmp

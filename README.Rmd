@@ -63,9 +63,7 @@ cbbinom_plot_y <- pcbbinom(
   size = 10,
   alpha = 2,
   beta = 4,
-  ncp = -1,
-  # Set low precision for faster computation
-  prec = 0
+  ncp = -1
 )
 # The beta-binomial CDF
 bbinom_plot_x <- seq(0L, 10L, 1L)
@@ -106,9 +104,7 @@ cbbinom_plot_y_d <- dcbbinom(
   size = 10,
   alpha = 2,
   beta = 4,
-  ncp = -1/2,
-  # Set low precision for faster computation
-  prec = 0
+  ncp = -1/2
 )
 # The beta-binomial CDF
 bbinom_plot_x <- seq(0L, 10L, 1L)
@@ -150,7 +146,7 @@ system.time(pcbbinom_plot_prec0_y <- pcbbinom(
   alpha = 2,
   beta = 4,
   ncp = -1,
-  prec = 0
+  prec = NULL
 ))
 ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
                                   y = pcbbinom_plot_prec0_y),
