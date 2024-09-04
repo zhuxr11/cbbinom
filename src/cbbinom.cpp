@@ -154,10 +154,15 @@ double dcbbinom_(
   };
   double out = boost::math::differentiation::finite_difference_derivative_bound(f, x, 0.0, size + 1.0);
   if (out < 0.0) {
-    warning("d[pcbbinom(q = %f, size = %f, alpha = %f, beta = %f)]/dq = %f < 0, \
-              which is set to 0, since probability density cannot be negative; \
-              you may use a higher [prec] level than %f",
-              x, size, alpha, beta, out, prec);
+    char base_warning[] = "d[pcbbinom(q = %f, size = %f, alpha = %f, beta = %f)]/dq = %f < 0, which is set to 0, since probability density cannot be negative";
+    if (prec.isNotNull()) {
+      IntegerVector prec_ = as<IntegerVector>(prec);
+      int prec_use = prec_(0);
+      warning(std::strcat(base_warning, "; you may use a higher [prec] level than %f"),
+              x, size, alpha, beta, out, prec_use);
+    } else {
+      warning(base_warning, x, size, alpha, beta, out);
+    }
     out = 0.0;
   }
   if (log == true) {
