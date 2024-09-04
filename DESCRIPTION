@@ -19,4 +19,6 @@ LinkingTo:
     Rcpp
 Imports: 
     Rcpp
+URL: https://github.com/zhuxr11/cbbinom
+BugReports: https://github.com/zhuxr11/cbbinom/issues
 SystemRequirements: gmp, mpfr
