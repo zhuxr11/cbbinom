@@ -572,20 +572,6 @@ std::vector<T3> conv_vec_prec(const T1& x) {
   return out;
 }
 
-typedef typename boost::multiprecision::number<boost::multiprecision::backends::mpfr_float_backend<0>> prec_float;
-struct scoped_precision
-{
-  unsigned p;
-  scoped_precision(unsigned new_p) : p(prec_float::default_precision())
-  {
-    prec_float::default_precision(new_p);
-  }
-  ~scoped_precision()
-  {
-    prec_float::default_precision(p);
-  }
-};
-
 // [[Rcpp::interfaces(r, cpp)]]
 //' Generalized hypergeometric function
 //'
@@ -657,9 +643,8 @@ double gen_hypergeo(const NumericVector& U,
   } else {
     IntegerVector prec_ = as<IntegerVector>(prec);
     unsigned int prec_use = (unsigned) prec_(0);
-    // prec_float::default_precision(prec_use);
-    // prec_float::default_variable_precision_options(boost::multiprecision::variable_precision_options::preserve_target_precision);
-    scoped_precision scoped(prec_use);
+    typedef typename boost::multiprecision::number<boost::multiprecision::backends::mpfr_float_backend<0>> prec_float;
+    boost::math::scoped_precision<prec_float> scoped(prec_use);
     prec_float x_ = x;
     std::vector<prec_float> U_ = conv_vec_prec<NumericVector, double, prec_float>(U);
     std::vector<prec_float> L_ = conv_vec_prec<NumericVector, double, prec_float>(L);
