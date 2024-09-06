@@ -46,6 +46,14 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: '[Stage] [macOS] Install required system libs'
+        if: runner.os == 'macOS'
+        run: brew install gmp mpfr
+
+      - name: '[Stage] [Windows] Install required system libs'
+        if: runner.os == 'Windows'
+        run: pacman -Syu mingw-w64-x86_64-make mingw-w64-x86_64-pkg-config gmp mpfr --noconfirm
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true

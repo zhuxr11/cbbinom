@@ -9,6 +9,7 @@ gmp_include_path=""
 AC_ARG_WITH([gmp-include],
             AS_HELP_STRING([--with-gmp-include=GMP_INCLUDE],[specify the GMP include path]),
             [gmp_include_path=$withval])
+CBBINOM_CPPFLAGS="-I."
 if test [ -n "$gmp_include_path" ] ; then
    CBBINOM_CPPFLAGS="${CBBINOM_CPPFLAGS} -I${gmp_include_path}"
 else
@@ -21,7 +22,6 @@ mpfr_include_path=""
 AC_ARG_WITH([mpfr-include],
             AS_HELP_STRING([--with-mpfr-include=MPFR_INCLUDE],[specify the MPFR include path]),
             [mpfr_include_path=$withval])
-CBBINOM_CPPFLAGS="-I."
 if test [ -n "$mpfr_include_path" ] ; then
    CBBINOM_CPPFLAGS="${CBBINOM_CPPFLAGS} -I${mpfr_include_path}"
 else
@@ -130,7 +130,7 @@ echo "
   --------------------------------------------------
   Configuration for ${PACKAGE_NAME} ${PACKAGE_VERSION}
 
-    cppflags: ${CPPFLAGS} ${PKG_CPPFLAGS}
+    cppflags: ${CPPFLAGS} ${CBBINOM_CPPFLAGS}
     libs:     ${LIBS}
 
   --------------------------------------------------
