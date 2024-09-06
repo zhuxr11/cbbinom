@@ -39,7 +39,7 @@ dnl Select optional library paths
 AC_ARG_WITH([gmp-lib],
             AS_HELP_STRING([--with-gmp-lib=GMP_LIB],[the location of GMP library]),
             [gmp_lib_path=$withval])
-if test [ -n "gmp_lib_path" ] ; then
+if test [ -n "$gmp_lib_path" ] ; then
    LIBS="-L${gmp_lib_path} -lgmp ${LIBS}"
 else
   if test [ -n "${CBBINOM_GMP_LIBS}" ] ; then
@@ -50,7 +50,7 @@ fi
 AC_ARG_WITH([mpfr-lib],
             AS_HELP_STRING([--with-mpfr-lib=MPFR_LIB],[the location of MPFR library]),
             [mpfr_lib_path=$withval])
-if test [ -n "mpfr_lib_path" ] ; then
+if test [ -n "$mpfr_lib_path" ] ; then
    LIBS="-L${mpfr_lib_path} -lmpfr ${LIBS}"
 else
   if test [ -n "${CBBINOM_MPFR_LIBS}" ] ; then

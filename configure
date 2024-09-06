@@ -2381,7 +2381,7 @@ then :
   withval=$with_gmp_lib; gmp_lib_path=$withval
 fi
 
-if test  -n "gmp_lib_path"  ; then
+if test  -n "$gmp_lib_path"  ; then
    LIBS="-L${gmp_lib_path} -lgmp ${LIBS}"
 else
   if test  -n "${CBBINOM_GMP_LIBS}"  ; then
@@ -2396,7 +2396,7 @@ then :
   withval=$with_mpfr_lib; mpfr_lib_path=$withval
 fi
 
-if test  -n "mpfr_lib_path"  ; then
+if test  -n "$mpfr_lib_path"  ; then
    LIBS="-L${mpfr_lib_path} -lmpfr ${LIBS}"
 else
   if test  -n "${CBBINOM_MPFR_LIBS}"  ; then
