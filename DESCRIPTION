@@ -1,0 +1,24 @@
+Package: cbbinom
+Title: Continuous Analog of a Beta-Binomial Distribution
+Version: 0.1.0.9000
+Authors@R: 
+    person("Xiurui", "Zhu", , "zxr6@163.com", role = c("aut", "cre"),
+           comment = c())
+Description: Implementation of the d/p/q/r family of functions for a continuous analog to the standard discrete beta-binomial with continuous size parameter and continuous support with x in [0, size + 1].
+License: MIT + file LICENSE
+Suggests: 
+    extraDistr,
+    ggplot2,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+LinkingTo: 
+    BH,
+    Rcpp
+Imports: 
+    Rcpp
+URL: https://github.com/zhuxr11/cbbinom
+BugReports: https://github.com/zhuxr11/cbbinom/issues
+SystemRequirements: gmp, mpfr
