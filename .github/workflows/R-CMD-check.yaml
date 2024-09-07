@@ -48,7 +48,7 @@ jobs:
 
       - name: '[macOS] Install required system libs'
         if: runner.os == 'macOS'
-        run: brew install gmp mpfr
+        run: brew install --quiet gmp mpfr
 
       - name: '[Windows] Install required system libs'
         if: runner.os == 'Windows'
