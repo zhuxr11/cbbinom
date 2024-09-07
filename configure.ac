@@ -15,6 +15,11 @@ if test [ -n "$gmp_include_path" ] ; then
 else
   if test [ -n "${CBBINOM_GMP_INCLUDE}" ] ; then
      CBBINOM_CPPFLAGS="${CBBINOM_CPPFLAGS} -I${CBBINOM_GMP_INCLUDE}"
+  else
+    if test -n "${PKG_CONFIG}"; then
+      GMP_CFLAGS_PKG_CONFIG=`"${PKG_CONFIG}" --cflags gmp`
+      CBBINOM_CPPFLAGS="${CBBINOM_CPPFLAGS} ${GMP_CFLAGS_PKG_CONFIG}"
+    fi
   fi
 fi
 
@@ -44,6 +49,11 @@ if test [ -n "$gmp_lib_path" ] ; then
 else
   if test [ -n "${CBBINOM_GMP_LIBS}" ] ; then
      LIBS="-L${CBBINOM_GMP_LIBS} -lgmp ${LIBS}"
+  else
+    if test -n "${PKG_CONFIG}"; then
+      GMP_LIBS_PKG_CONFIG=`"${PKG_CONFIG}" --libs gmp`
+      LIBS="${GMP_LIBS_PKG_CONFIG} ${LIBS}"
+    fi
   fi
 fi
 
