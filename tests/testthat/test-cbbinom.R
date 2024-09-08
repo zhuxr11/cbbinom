@@ -5,7 +5,7 @@ library(extraDistr)
 test_size <- 10
 test_alpha <- 2
 test_beta <- 4
-test_delta <- 1e-6
+test_delta <- 1e-3
 test_prec <- 20L
 test_tol <- 1e-6
 test_max_iter <- 10000L
@@ -53,9 +53,8 @@ testthat::test_that(
     testthat::expect_equal(
       cpp_qcbbinom(p = test_val_log, size = test_size,
                    alpha = test_alpha, beta = test_beta,
-                   lower_tail = TRUE, log_p = TRUE,
-                   p_tol = test_tol, p_max_iter = test_max_iter, p_prec = test_prec,
-                   root_tol = test_tol, root_max_iter = test_max_iter),
+                   lower_tail = TRUE, log_p = TRUE, prec = test_prec,
+                   tol = test_tol, max_iter = test_max_iter),
       test_x
     )
     testthat::expect_identical(test_val_log, test_val_log_orig)

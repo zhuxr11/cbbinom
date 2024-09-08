@@ -45,7 +45,7 @@ std::vector<T3> conv_vec_prec(const T1& x) {
 //'
 //' @examples
 //' gen_hypergeo(U = c(1.1, 0.2, 0.3), L = c(10.1, 4 * pi), x = 1,
-//'              tol = NULL, max_iter = 10000L, prec = NULL, check_mode = TRUE, log = FALSE)
+//'              prec = NULL, check_mode = TRUE, log = FALSE)
 // [[Rcpp::export]]
 double gen_hypergeo(const NumericVector& U,
                     const NumericVector& L,

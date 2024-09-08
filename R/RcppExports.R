@@ -44,7 +44,7 @@ cpp_rcbbinom <- function(n, size, alpha, beta, prec, tol, max_iter) {
 #'
 #' @examples
 #' gen_hypergeo(U = c(1.1, 0.2, 0.3), L = c(10.1, 4 * pi), x = 1,
-#'              tol = NULL, max_iter = 10000L, prec = NULL, check_mode = TRUE, log = FALSE)
+#'              prec = NULL, check_mode = TRUE, log = FALSE)
 gen_hypergeo <- function(U, L, x, prec, check_mode, log) {
     .Call(`_cbbinom_gen_hypergeo`, U, L, x, prec, check_mode, log)
 }
