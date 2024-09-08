@@ -15,13 +15,74 @@ stats](https://cranlogs.r-pkg.org/badges/grand-total/cbbinom)](https://CRAN.R-pr
 <!-- badges: end -->
 
 **Package**: [*cbbinom*](https://github.com/zhuxr11/cbbinom)
-0.1.0.9000<br /> **Author**: Xiurui Zhu<br /> **Modified**: 2024-08-31
-22:21:56<br /> **Compiled**: 2024-08-31 22:22:02
+0.1.0.9000<br /> **Author**: Xiurui Zhu<br /> **Modified**: 2024-09-08
+17:20:06<br /> **Compiled**: 2024-09-08 17:20:12
 
 The goal of `cbbinom` is to implement continuous beta-binomial
 distribution.
 
 ## Installation
+
+### System requirements
+
+If you are building from source (e.g. not installing binaries on
+Windows), you need to prepare for two system requirements:
+[GMP](https://gmplib.org/) and [MPFR](https://www.mpfr.org/), to
+facilitate high-precision floating point types. You may follow the
+installation instructions from their websites, or try the following
+commands for quick (default) installation.
+
+- For Windows with rtools40 (or newer) installed, please run:
+
+``` bash
+pacman -Syu mingw-w64-x86_64-make mingw-w64-x86_64-pkg-config gmp mpfr
+```
+
+- For macOS, please run:
+
+``` bash
+brew install gmp mpfr
+```
+
+- For linux, please build and install platform-specific libraries
+  through their `configure` file, or install them using `conda`.
+
+If the requirements are installed into their default paths (e.g. without
+using the `--prefix` option), you are OK to go ahead installing the
+package: `pkg-config` will take care finding them. However, if they are
+not, you may first need to provide configuration arguments to
+installation paths in one of the following ways (replacing
+`<my_gmp_install>` and `<my_mpfr_install>` with string literals):
+
+- Directly set `configure.args` in `install.packages()`:
+
+``` r
+my_gmp_install <- shQuote(<my_gmp_install>)
+my_mpfr_install <- shQuote(<my_mpfr_install>)
+install.packages(
+  "cbbinom",
+  configure.args = c(
+    paste0("--with-gmp-include=", my_gmp_install, "/include"),
+    paste0("--with-mpfr-include=", my_mpfr_install, "/include"),
+    paste0("--with-gmp-lib=", my_gmp_install, "/lib"),
+    paste0("--with-mpfr-lib=", my_mpfr_install, "/lib")
+  )
+)
+```
+
+- Set the following environment variables and run
+  `install.packages("cbbinom")`:
+
+``` bash
+MY_GMP_INSTALL='<my_gmp_install>'
+MY_MPFR_INSTALL='<my_mpfr_install>'
+CBBINOM_GMP_INCLUDE="${MY_GMP_INSTALL}/include"
+CBBINOM_MPFR_INCLUDE="${MY_MPFR_INSTALL}/include"
+CBBINOM_GMP_LIB="${MY_GMP_INSTALL}/lib"
+CBBINOM_MPFR_LIB="${MY_MPFR_INSTALL}/lib"
+```
+
+### The package
 
 You can install the released version of `cbbinom` from
 [CRAN](https://cran.r-project.org/) with:
@@ -58,9 +119,7 @@ cbbinom_plot_y <- pcbbinom(
   size = 10,
   alpha = 2,
   beta = 4,
-  ncp = -1,
-  # Set low precision for faster computation
-  prec = 0
+  ncp = -1
 )
 # The beta-binomial CDF
 bbinom_plot_x <- seq(0L, 10L, 1L)
@@ -106,9 +165,7 @@ cbbinom_plot_y_d <- dcbbinom(
   size = 10,
   alpha = 2,
   beta = 4,
-  ncp = -1/2,
-  # Set low precision for faster computation
-  prec = 0
+  ncp = -1/2
 )
 # The beta-binomial CDF
 bbinom_plot_x <- seq(0L, 10L, 1L)
@@ -142,29 +199,24 @@ ggplot2::ggplot(mapping = ggplot2::aes(x = x, y = y)) +
 <img src="man/figures/README-cbbinom-vs-bbinom-d-1.png" width="100%" />
 
 For larger sizes, you may need higher precision than double for
-accuracy, at the cost of computational speed. When computing probability
-density, it is advisable to use a higher accuracy level than the one
-sufficient to compute the corresponding cumulative probability (e.g. 20
--\> 25), since numerical derivative taken to compute the probability
-density may be more sensitive to computational errors.
+accuracy, at the cost of computational speed.
 
 ``` r
-cbbinom_plot_prec_x <- seq(0, 41, 0.1)
+cbbinom_plot_prec_x_p <- seq(0, 41, 0.1)
 # Compute CDF at default (double) precision level
 system.time(pcbbinom_plot_prec0_y <- pcbbinom(
-  q = cbbinom_plot_prec_x,
+  q = cbbinom_plot_prec_x_p,
   size = 40,
   alpha = 2,
   beta = 4,
-  ncp = -1,
-  prec = 0
+  prec = NULL
 ))
 #>    user  system elapsed 
-#>    0.08    0.00    0.08
+#>    0.06    0.00    0.07
 ```
 
 ``` r
-ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
+ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x_p,
                                   y = pcbbinom_plot_prec0_y),
                 mapping = ggplot2::aes(x = x, y = y)) +
   ggplot2::geom_point() +
@@ -172,24 +224,23 @@ ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
   ggplot2::labs(y = "CDF(x)")
 ```
 
-<img src="man/figures/README-cbbinom-prec-pd-1.png" width="100%" />
+<img src="man/figures/README-cbbinom-prec-p-1.png" width="100%" />
 
 ``` r
 # Compute CDF at precision level 20
 system.time(pcbbinom_plot_prec20_y <- pcbbinom(
-  q = cbbinom_plot_prec_x,
+  q = cbbinom_plot_prec_x_p,
   size = 40,
   alpha = 2,
   beta = 4,
-  ncp = -1,
-  prec = 20
+  prec = 20L
 ))
 #>    user  system elapsed 
-#>    4.37    0.00    4.39
+#>    3.75    0.00    3.77
 ```
 
 ``` r
-ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
+ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x_p,
                                   y = pcbbinom_plot_prec20_y),
                 mapping = ggplot2::aes(x = x, y = y)) +
   ggplot2::geom_point() +
@@ -197,28 +248,34 @@ ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
   ggplot2::labs(y = "CDF(x)")
 ```
 
-<img src="man/figures/README-cbbinom-prec-pd-2.png" width="100%" />
+<img src="man/figures/README-cbbinom-prec-p-2.png" width="100%" />
+
+When computing probability density, it is advisable to use a higher
+accuracy level than the one sufficient to compute the corresponding
+cumulative probability (e.g. 20 -\> 25), since numerical derivative
+taken to compute the probability density may be more sensitive to
+computational errors.
 
 ``` r
+cbbinom_plot_prec_x_d <- seq(0, 41, 0.1)
 # Compute PDF at precision level 20
 system.time(dcbbinom_plot_prec20_y <- dcbbinom(
-  x = cbbinom_plot_prec_x,
+  x = cbbinom_plot_prec_x_d,
   size = 40,
   alpha = 2,
   beta = 4,
-  ncp = -1,
-  prec = 20
+  prec = 20L
 ))
 #> Warning in cpp_dcbbinom(x = as.numeric(x - ncp), size = as.numeric(size), :
 #> d[pcbbinom(q = 29.000000, size = 40.000000, alpha = 2.000000, beta =
 #> 4.000000)]/dq = -0.000206 < 0, which is set to 0, since probability density
-#> cannot be negative; you may use a higher [prec] level than 20.000000
+#> cannot be negative; you may use a higher [prec] level than 20
 #>    user  system elapsed 
-#>   33.56    0.03   33.64
+#>   27.22    0.02   27.26
 ```
 
 ``` r
-ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
+ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x_d,
                                   y = dcbbinom_plot_prec20_y),
                 mapping = ggplot2::aes(x = x, y = y)) +
   ggplot2::geom_point() +
@@ -226,24 +283,23 @@ ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
   ggplot2::labs(y = "PDF(x)")
 ```
 
-<img src="man/figures/README-cbbinom-prec-pd-3.png" width="100%" />
+<img src="man/figures/README-cbbinom-prec-d-1.png" width="100%" />
 
 ``` r
 # Compute PDF at precision level 25
 system.time(dcbbinom_plot_prec25_y <- dcbbinom(
-  x = cbbinom_plot_prec_x,
+  x = cbbinom_plot_prec_x_d,
   size = 40,
   alpha = 2,
   beta = 4,
-  ncp = -1,
-  prec = 25
+  prec = 25L
 ))
 #>    user  system elapsed 
-#>   50.66    0.00   50.67
+#>   38.67    0.03   38.86
 ```
 
 ``` r
-ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
+ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x_d,
                                   y = dcbbinom_plot_prec25_y),
                 mapping = ggplot2::aes(x = x, y = y)) +
   ggplot2::geom_point() +
@@ -251,7 +307,7 @@ ggplot2::ggplot(data = data.frame(x = cbbinom_plot_prec_x,
   ggplot2::labs(y = "PDF(x)")
 ```
 
-<img src="man/figures/README-cbbinom-prec-pd-4.png" width="100%" />
+<img src="man/figures/README-cbbinom-prec-d-2.png" width="100%" />
 
 ## Examples of continuous beta-binomial distribution
 

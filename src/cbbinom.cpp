@@ -35,8 +35,6 @@ double pcbbinom_(
     const double& beta,
     const bool& lower_tail,
     const bool& log_p,
-    const Nullable<NumericVector>& tol,
-    const int& max_iter,
     const Nullable<IntegerVector>& prec
 ) {
   if (VALID_PARAM(q, size, alpha, beta) == false) {
@@ -65,7 +63,7 @@ double pcbbinom_(
   // Lower vector
   NumericVector L = {size + 2.0 - q, size + 1.0 - q + alpha + beta};
   // Final value
-  double out = std::exp(coef_log + gen_hypergeo(U, L, 1.0, tol, max_iter, prec, true, true));
+  double out = std::exp(coef_log + gen_hypergeo(U, L, 1.0, prec, true, true));
   if (lower_tail == false) {
     out = 1 - out;
   }
@@ -93,19 +91,38 @@ Real finite_difference_derivative_bound(const F f, Real x, Real low, Real high, 
   // Error: h^6f^(7)(x)/140 + 5|f(x)|eps/h
   Real h = pow(eps / 168, static_cast<Real>(1) / static_cast<Real>(7));
   h = detail::make_xph_representable(x, h);
+  Real yh = static_cast<Real>(0);
+  Real y2h = static_cast<Real>(0);
+  Real y3h = static_cast<Real>(0);
+  Real ymh = static_cast<Real>(0);
+  Real ym2h = static_cast<Real>(0);
+  Real ym3h = static_cast<Real>(0);
 
   Real y = f(x);
-  Real yh = f(x + h);
-  Real ymh = f(x - h);
-  Real y1 = yh - ymh;
-  Real y2h = f(x + 2 * h);
-  Real ym2h = f(x - 2 * h);
-  Real y3h = f(x + 3 * h);
-  Real ym3h = f(x - 3 * h);
-  Real y2 = ym2h - y2h;
-  Real y3 = y3h - ym3h;
+  // Rprintf("x = %f\n", x);
+  // Rprintf("h = %f\n", h);
+  // Rprintf("y = %f\n", y);
+  if (x + 3 * h <= high) {
+    yh = f(x + h);
+    // Rprintf("yh = %f\n", yh);
+    y2h = f(x + 2 * h);
+    // Rprintf("y2h = %f\n", y2h);
+    y3h = f(x + 3 * h);
+    // Rprintf("y3h = %f\n", y3h);
+  }
+  if (x - 3 * h >= low) {
+    ymh = f(x - h);
+    // Rprintf("ymh = %f\n", ymh);
+    ym2h = f(x - 2 * h);
+    // Rprintf("ym2h = %f\n", ym2h);
+    ym3h = f(x - 3 * h);
+    // Rprintf("ym3h = %f\n", ym3h);
+  }
 
   if ((x - 3 * h >= low) && (x + 3 * h <= high)) {
+    Real y1 = yh - ymh;
+    Real y2 = ym2h - y2h;
+    Real y3 = y3h - ym3h;
     if (error)
     {
       // Mathematica code to generate fd scheme for 7th derivative:
@@ -143,8 +160,6 @@ double dcbbinom_(
     const double& alpha,
     const double& beta,
     const bool& log,
-    const Nullable<NumericVector>& tol,
-    const int& max_iter,
     const Nullable<IntegerVector>& prec
 ) {
   if (VALID_PARAM(x, size, alpha, beta) == false) {
@@ -160,22 +175,23 @@ double dcbbinom_(
     }
   }
   // Compute derivative on pcbbinom_
-  auto f = [&size, &alpha, &beta, &tol, &max_iter, &prec](double x) {
-    return pcbbinom_(x, size, alpha, beta, true, false, tol, max_iter, prec);
+  auto f = [&size, &alpha, &beta, &prec](double x) {
+    return pcbbinom_(x, size, alpha, beta, true, false, prec);
   };
   double out = boost::math::differentiation::finite_difference_derivative_bound(f, x, 0.0, size + 1.0);
   if (out < 0.0) {
-    char base_warning[] = "d[pcbbinom(q = %f, size = %f, alpha = %f, beta = %f)]/dq = %f < 0, which is set to 0, since probability density cannot be negative";
+    String base_warning = "d[pcbbinom(q = %f, size = %f, alpha = %f, beta = %f)]/dq = %f < 0, which is set to 0, since probability density cannot be negative";
     if (prec.isNotNull()) {
       IntegerVector prec_ = as<IntegerVector>(prec);
       int prec_use = prec_(0);
-      warning(std::strcat(base_warning, "; you may use a higher [prec] level than %f"),
-              x, size, alpha, beta, out, prec_use);
+      base_warning += "; you may use a higher [prec] level than %f";
+      warning(base_warning.get_cstring(), x, size, alpha, beta, out, prec_use);
     } else {
-      warning(base_warning, x, size, alpha, beta, out);
+      warning(base_warning.get_cstring(), x, size, alpha, beta, out);
     }
     out = 0.0;
   }
+  return out;
   if (log == true) {
     out = std::log(out);
   }
@@ -194,14 +210,11 @@ private:
   double p;
 public:
   PcbbinomEqn(const double size_, const double alpha_, const double beta_,
-              const Nullable<NumericVector> tol_, const int max_iter_,
               const Nullable<IntegerVector> prec_, const double p_):
-    size(size_), alpha(alpha_), beta(beta_),
-    tol(tol_), max_iter(max_iter_), prec(prec_), p(p_) {};
+    size(size_), alpha(alpha_), beta(beta_), prec(prec_), p(p_) {};
   double operator () (const double& x) const override {
     return pcbbinom_(x, this->size, this->alpha, this->beta,
-                     true, false, this->tol, this->max_iter,
-                     this->prec) - this->p;
+                     true, false, this->prec) - this->p;
   }
 };
 
@@ -212,11 +225,9 @@ double qcbbinom_(
     const double& beta,
     const bool& lower_tail,
     const bool& log_p,
-    const Nullable<NumericVector>& p_tol,
-    const int& p_max_iter,
-    const Nullable<IntegerVector>& p_prec,
-    double root_tol,
-    int root_max_iter
+    const Nullable<IntegerVector>& prec,
+    double tol,
+    int max_iter
 ) {
   if (log_p == true) {
     p = std::exp(p);
@@ -233,9 +244,9 @@ double qcbbinom_(
   if (lower_tail == false) {
     p = 1.0 - p;
   }
-  PcbbinomEqn eqn_obj(size, alpha, beta, p_tol, p_max_iter, p_prec, p);
+  PcbbinomEqn eqn_obj(size, alpha, beta, prec, p);
   return cbbinom::cpp_uniroot(0.0, size + 1.0, -p, 1.0 - p,
-                              &eqn_obj, &root_tol, &root_max_iter);
+                              &eqn_obj, &tol, &max_iter);
 }
 
 // Vectorized functions
@@ -249,8 +260,6 @@ NumericVector cpp_pcbbinom(
     const NumericVector& beta,
     const bool& lower_tail,
     const bool& log_p,
-    const Nullable<NumericVector>& tol,
-    const IntegerVector& max_iter,
     const Nullable<IntegerVector>& prec
 ) {
   if (std::min({q.length(), size.length(),
@@ -274,8 +283,6 @@ NumericVector cpp_pcbbinom(
       GETV(beta, idx),
       true,   // lower_tail
       false,  // log_p
-      nullable_getv<NumericVector, NumericVector>(tol, idx),
-      GETV(max_iter, idx),
       nullable_getv<IntegerVector, IntegerVector>(prec, idx)
     );
   }
@@ -298,11 +305,9 @@ NumericVector cpp_qcbbinom(
     const NumericVector& beta,
     const bool& lower_tail,
     const bool& log_p,
-    const Nullable<NumericVector>& p_tol,
-    const IntegerVector& p_max_iter,
-    const Nullable<IntegerVector>& p_prec,
-    const NumericVector& root_tol,
-    const IntegerVector& root_max_iter
+    const Nullable<IntegerVector>& prec,
+    const NumericVector& tol,
+    const IntegerVector& max_iter
 ) {
   if (std::min({p.length(), size.length(),
                alpha.length(), beta.length()}) < 1) {
@@ -325,8 +330,8 @@ NumericVector cpp_qcbbinom(
     p_ = 1 - p_;
   }
 
-  NumericVector root_tol_ = clone(root_tol);
-  IntegerVector root_max_iter_ = clone(root_max_iter);
+  NumericVector tol_ = clone(tol);
+  IntegerVector max_iter_ = clone(max_iter);
   for (R_xlen_t idx = 0; idx < n_max; idx++) {
     q(idx) = qcbbinom_(
       GETV(p_, idx),
@@ -335,11 +340,9 @@ NumericVector cpp_qcbbinom(
       GETV(beta, idx),
       true,   // lower_tail
       false,  // log_p
-      nullable_getv<NumericVector, NumericVector>(p_tol, idx),
-      GETV(p_max_iter, idx),
-      nullable_getv<IntegerVector, IntegerVector>(p_prec, idx),
-      GETV(root_tol_, idx),
-      GETV(root_max_iter_, idx)
+      nullable_getv<IntegerVector, IntegerVector>(prec, idx),
+      GETV(tol_, idx),
+      GETV(max_iter_, idx)
     );
   }
   return q;
@@ -353,8 +356,6 @@ NumericVector cpp_dcbbinom(
     const NumericVector& alpha,
     const NumericVector& beta,
     const bool& log,
-    const Nullable<NumericVector>& tol,
-    const IntegerVector& max_iter,
     const Nullable<IntegerVector>& prec
 ) {
   if (std::min({x.length(), size.length(),
@@ -376,14 +377,12 @@ NumericVector cpp_dcbbinom(
       GETV(size, i),
       GETV(alpha, i),
       GETV(beta, i),
-      true,
-      nullable_getv<NumericVector, NumericVector>(tol, i),
-      GETV(max_iter, i),
+      false,
       nullable_getv<IntegerVector, IntegerVector>(prec, i)
     );
   }
-  if (log == false) {
-    out = exp(out);
+  if (log == true) {
+    out = Rcpp::log(out);
   }
   return(out);
 }
@@ -395,36 +394,29 @@ NumericVector cpp_rcbbinom(
   const NumericVector& size,
   const NumericVector& alpha,
   const NumericVector& beta,
-  const Nullable<NumericVector>& p_tol,
-  const IntegerVector& p_max_iter,
-  const Nullable<IntegerVector>& p_prec,
-  const NumericVector& root_tol,
-  const IntegerVector& root_max_iter
+  const Nullable<IntegerVector>& prec,
+  const NumericVector& tol,
+  const IntegerVector& max_iter
 ) {
   return cpp_qcbbinom(runif(n), size, alpha, beta, true, false,
-                      p_tol, p_max_iter, p_prec, root_tol, root_max_iter);
+                      prec, tol, max_iter);
 }
 
 /*** R
 plot(seq(0, 11, 0.01),
      cpp_pcbbinom(q = seq(0, 11, 0.01), size = 10, alpha = 2, beta = 4,
-                  lower_tail = TRUE, log_p = FALSE,
-                  tol = NULL, max_iter = 10000L, prec = NULL))
+                  lower_tail = TRUE, log_p = FALSE, prec = NULL))
 # Density function
-cpp_dcbbinom(x = 5, size = 10, alpha = 2, beta = 4,
-             log = FALSE, tol = NULL, max_iter = 10000L, prec = 20)
+cpp_dcbbinom(x = 5, size = 10, alpha = 2, beta = 4, log = FALSE, prec = 20L)
 # Distribution function
 (test_val <- cpp_pcbbinom(q = 5, size = 10, alpha = 2, beta = 4,
-                          lower_tail = TRUE, log_p = FALSE,
-                          tol = NULL, max_iter = 10000L, prec = 20))
+                          lower_tail = TRUE, log_p = FALSE, prec = 20L))
 # Quantile function
 cpp_qcbbinom(p = test_val, size = 10, alpha = 2, beta = 4,
-             lower_tail = TRUE, log_p = FALSE,
-             p_tol = NULL, p_max_iter = 10000L, p_prec = 20,
-             root_tol = 1e-6, root_max_iter = 10000L)
+             lower_tail = TRUE, log_p = FALSE, prec = 20L,
+             tol = 1e-6, max_iter = 10000L)
 # Random generation
 set.seed(1111L)
-cpp_rcbbinom(n = 10L, size = 10, alpha = 2, beta = 4,
-             p_tol = NULL, p_max_iter = 10000L, p_prec = 20,
-             root_tol = 1e-6, root_max_iter = 10000L)
+cpp_rcbbinom(n = 10L, size = 10, alpha = 2, beta = 4, prec = 20L,
+             tol = 1e-6, max_iter = 10000L)
 */

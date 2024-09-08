@@ -8,17 +8,7 @@
 \alias{rcbbinom}
 \title{The Continuous Beta-Binomial Distribution}
 \usage{
-dcbbinom(
-  x,
-  size,
-  alpha = 1,
-  beta = 1,
-  ncp = 0,
-  log = FALSE,
-  tol = NULL,
-  max_iter = 10000L,
-  prec = NULL
-)
+dcbbinom(x, size, alpha = 1, beta = 1, ncp = 0, log = FALSE, prec = NULL)
 
 pcbbinom(
   q,
@@ -28,8 +18,6 @@ pcbbinom(
   ncp = 0,
   lower.tail = TRUE,
   log.p = FALSE,
-  tol = NULL,
-  max_iter = 10000L,
   prec = NULL
 )
 
@@ -41,11 +29,9 @@ qcbbinom(
   ncp = 0,
   lower.tail = TRUE,
   log.p = FALSE,
-  p_tol = NULL,
-  p_max_iter = 10000L,
-  p_prec = NULL,
-  root_tol = 1e-06,
-  root_max_iter = 10000L
+  prec = NULL,
+  tol = 1e-06,
+  max_iter = 10000L
 )
 
 rcbbinom(
@@ -54,11 +40,9 @@ rcbbinom(
   alpha = 1,
   beta = 1,
   ncp = 0,
-  p_tol = NULL,
-  p_max_iter = 10000L,
-  p_prec = NULL,
-  root_tol = 1e-06,
-  root_max_iter = 10000L
+  prec = NULL,
+  tol = 1e-06,
+  max_iter = 10000L
 )
 }
 \arguments{
@@ -72,18 +56,16 @@ rcbbinom(
 
 \item{log, log.p}{logical; if TRUE, probabilities p are given as log(p).}
 
-\item{tol, max_iter, prec}{arguments passed on to \code{\link{gen_hypergeo}},
-vectorized along with distribution parameters.}
+\item{prec}{arguments passed on to \code{\link{gen_hypergeo}},
+vectorized and recycled along with distribution parameters.}
 
 \item{lower.tail}{logical; if TRUE (default), probabilities are
     \eqn{P[X \le x]}, otherwise, \eqn{P[X > x]}.}
 
 \item{p}{vector of probabilities.}
 
-\item{p_tol, p_max_iter, p_prec}{same as \code{tol}, \code{max_iter} and \code{prec}.}
-
-\item{root_tol, root_max_iter}{arguments passed on to \code{\link[stats]{uniroot}},
-vectorized along with distribution parameters.}
+\item{tol, max_iter}{arguments passed on to \code{\link[stats]{uniroot}},
+vectorized and recycled along with distribution parameters.}
 
 \item{n}{number of observations. If \code{length(n) > 1}, the length
     is taken to be the number required.}

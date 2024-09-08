@@ -4,19 +4,12 @@
 \alias{gen_hypergeo}
 \title{Generalized hypergeometric function}
 \usage{
-gen_hypergeo(U, L, x, tol, max_iter, prec, check_mode, log)
+gen_hypergeo(U, L, x, prec, check_mode, log)
 }
 \arguments{
 \item{U, L}{Numeric vectors for upper and lower values.}
 
 \item{x}{Numeric (1L) as common ratio.}
-
-\item{tol}{\code{NULL} or Numeric (1L) as convergence tolerance.
-If \code{NULL}, use the epsilon for the \code{value_type} determined by
-\code{boost::math::tools::promote_args} (e.g. for \code{double} input,
-usually use the epsilon for \code{long double}).}
-
-\item{max_iter}{Integer (1L) as iteration limit.}
 
 \item{prec}{\code{NULL} or (unsigned) integer (1L) as precision level during computation,
 a.k.a the number of precise digits defined in \code{boost::multiprecision::mpfr_float}.
