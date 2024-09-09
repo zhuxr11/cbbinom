@@ -41,6 +41,7 @@ else
 fi
 
 dnl Select optional library paths
+gmp_lib_path=""
 AC_ARG_WITH([gmp-lib],
             AS_HELP_STRING([--with-gmp-lib=GMP_LIB],[the location of GMP library]),
             [gmp_lib_path=$withval])
@@ -57,6 +58,7 @@ else
   fi
 fi
 
+mpfr_lib_path=""
 AC_ARG_WITH([mpfr-lib],
             AS_HELP_STRING([--with-mpfr-lib=MPFR_LIB],[the location of MPFR library]),
             [mpfr_lib_path=$withval])
@@ -94,8 +96,9 @@ if test "${ac_cv_header_gmp_h}" = no; then
 
    Please install:
 
-   * gmp (Linux/MacOS)
-   * Rtools40 or above, which includes MPFR and GMP (Windows)
+   * pacman -Syu make gmp (Windows with rtools40 or newer)
+   * brew install gmp (MacOS)
+   * Platform-specific 'gmp' library with header (Linux)
 
    and try again.
 
@@ -104,7 +107,12 @@ if test "${ac_cv_header_gmp_h}" = no; then
    include and lib paths manually:
 
    R CMD INSTALL ${PACKAGE_NAME} \\
-     --configure-vars='LIBS=-L/path/to/libs CPPFLAGS=-I/path/to/headers'
+     --configure-vars='\\
+       --with-gmp-include=GMP_INCLUDE_PATH \\
+       --with-mpfr-include=MPFR_INCLUDE_PATH \\
+       --with-gmp-lib=GMP_LIB_PATH \\
+       --with-mpfr-lib=MPFR_LIB_PATH\\
+     '
   ---------------------------------------------])
 fi
 if test "${ac_cv_header_mpfr_h}" = no; then
@@ -114,8 +122,9 @@ if test "${ac_cv_header_mpfr_h}" = no; then
 
    Please install:
 
-   * mpfr (Linux/MacOS)
-   * Rtools40 or above, which includes MPFR and GMP (Windows)
+   * pacman -Syu make mpfr (Windows with rtools40 or newer)
+   * brew install mpfr (MacOS)
+   * Platform-specific 'mpfr' library with header (Linux)
 
    and try again.
 
@@ -124,7 +133,12 @@ if test "${ac_cv_header_mpfr_h}" = no; then
    include and lib paths manually:
 
    R CMD INSTALL ${PACKAGE_NAME} \\
-     --configure-vars='LIBS=-L/path/to/libs CPPFLAGS=-I/path/to/headers'
+     --configure-vars='\\
+       --with-gmp-include=GMP_INCLUDE_PATH \\
+       --with-mpfr-include=MPFR_INCLUDE_PATH \\
+       --with-gmp-lib=GMP_LIB_PATH \\
+       --with-mpfr-lib=MPFR_LIB_PATH\\
+     '
   ---------------------------------------------])
 fi
 

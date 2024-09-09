@@ -2379,6 +2379,7 @@ else
   fi
 fi
 
+gmp_lib_path=""
 
 # Check whether --with-gmp-lib was given.
 if test ${with_gmp_lib+y}
@@ -2399,6 +2400,7 @@ else
   fi
 fi
 
+mpfr_lib_path=""
 
 # Check whether --with-mpfr-lib was given.
 if test ${with_mpfr_lib+y}
@@ -3507,8 +3509,9 @@ as_fn_error $? "
 
    Please install:
 
-   * gmp (Linux/MacOS)
-   * Rtools40 or above, which includes MPFR and GMP (Windows)
+   * pacman -Syu make gmp (Windows with rtools40 or newer)
+   * brew install gmp (MacOS)
+   * Platform-specific 'gmp' library with header (Linux)
 
    and try again.
 
@@ -3517,7 +3520,12 @@ as_fn_error $? "
    include and lib paths manually:
 
    R CMD INSTALL ${PACKAGE_NAME} \\
-     --configure-vars='LIBS=-L/path/to/libs CPPFLAGS=-I/path/to/headers'
+     --configure-vars='\\
+       --with-gmp-include=GMP_INCLUDE_PATH \\
+       --with-mpfr-include=MPFR_INCLUDE_PATH \\
+       --with-gmp-lib=GMP_LIB_PATH \\
+       --with-mpfr-lib=MPFR_LIB_PATH\\
+     '
   ---------------------------------------------
 See 'config.log' for more details" "$LINENO" 5; }
 fi
@@ -3530,8 +3538,9 @@ as_fn_error $? "
 
    Please install:
 
-   * mpfr (Linux/MacOS)
-   * Rtools40 or above, which includes MPFR and GMP (Windows)
+   * pacman -Syu make mpfr (Windows with rtools40 or newer)
+   * brew install mpfr (MacOS)
+   * Platform-specific 'mpfr' library with header (Linux)
 
    and try again.
 
@@ -3540,7 +3549,12 @@ as_fn_error $? "
    include and lib paths manually:
 
    R CMD INSTALL ${PACKAGE_NAME} \\
-     --configure-vars='LIBS=-L/path/to/libs CPPFLAGS=-I/path/to/headers'
+     --configure-vars='\\
+       --with-gmp-include=GMP_INCLUDE_PATH \\
+       --with-mpfr-include=MPFR_INCLUDE_PATH \\
+       --with-gmp-lib=GMP_LIB_PATH \\
+       --with-mpfr-lib=MPFR_LIB_PATH\\
+     '
   ---------------------------------------------
 See 'config.log' for more details" "$LINENO" 5; }
 fi
