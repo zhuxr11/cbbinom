@@ -96,9 +96,9 @@ if test "${ac_cv_header_gmp_h}" = no; then
 
    Please install:
 
-   * pacman -Syu make gmp (Windows with rtools40 or newer)
-   * brew install gmp (MacOS)
-   * Platform-specific 'gmp' library with header (Linux)
+   * For Windows with rtools40 or newer: pacman -Syu make pkg-config gmp
+   * For macOS: brew install gmp
+   * For Linux: (please find out platform-specific 'gmp' library and build from source)
 
    and try again.
 
@@ -122,9 +122,9 @@ if test "${ac_cv_header_mpfr_h}" = no; then
 
    Please install:
 
-   * pacman -Syu make mpfr (Windows with rtools40 or newer)
-   * brew install mpfr (MacOS)
-   * Platform-specific 'mpfr' library with header (Linux)
+   * For Windows with rtools40 or newer: pacman -Syu make pkg-config mpfr
+   * For macOS: brew install mpfr
+   * For Linux: (please find out platform-specific 'mpfr' library and build from source)
 
    and try again.
 
