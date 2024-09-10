@@ -15,8 +15,8 @@ stats](https://cranlogs.r-pkg.org/badges/grand-total/cbbinom)](https://CRAN.R-pr
 <!-- badges: end -->
 
 **Package**: [*cbbinom*](https://github.com/zhuxr11/cbbinom)
-0.1.0.9000<br /> **Author**: Xiurui Zhu<br /> **Modified**: 2024-09-08
-17:20:06<br /> **Compiled**: 2024-09-08 17:20:12
+0.1.0.9000<br /> **Author**: Xiurui Zhu<br /> **Modified**: 2024-09-10
+22:17:11<br /> **Compiled**: 2024-09-10 22:17:21
 
 The goal of `cbbinom` is to implement continuous beta-binomial
 distribution.
@@ -35,7 +35,7 @@ commands for quick (default) installation.
 - For Windows with rtools40 (or newer) installed, please run:
 
 ``` bash
-pacman -Syu mingw-w64-x86_64-make mingw-w64-x86_64-pkg-config gmp mpfr
+pacman -Syu make pkg-config libtool gmp mpfr
 ```
 
 - For macOS, please run:
@@ -47,42 +47,16 @@ brew install gmp mpfr
 - For linux, please build and install platform-specific libraries
   through their `configure` file, or install them using `conda`.
 
-If the requirements are installed into their default paths (e.g. without
-using the `--prefix` option), you are OK to go ahead installing the
-package: `pkg-config` will take care finding them. However, if they are
-not, you may first need to provide configuration arguments to
-installation paths in one of the following ways (replacing
-`<my_gmp_install>` and `<my_mpfr_install>` with string literals):
-
-- Directly set `configure.args` in `install.packages()`:
-
-``` r
-my_gmp_install <- shQuote(<my_gmp_install>)
-my_mpfr_install <- shQuote(<my_mpfr_install>)
-install.packages(
-  "cbbinom",
-  configure.args = c(
-    paste0("--with-gmp-include=", my_gmp_install, "/include"),
-    paste0("--with-mpfr-include=", my_mpfr_install, "/include"),
-    paste0("--with-gmp-lib=", my_gmp_install, "/lib"),
-    paste0("--with-mpfr-lib=", my_mpfr_install, "/lib")
-  )
-)
-```
-
-- Set the following environment variables and run
-  `install.packages("cbbinom")`:
-
-``` bash
-MY_GMP_INSTALL='<my_gmp_install>'
-MY_MPFR_INSTALL='<my_mpfr_install>'
-CBBINOM_GMP_INCLUDE="${MY_GMP_INSTALL}/include"
-CBBINOM_MPFR_INCLUDE="${MY_MPFR_INSTALL}/include"
-CBBINOM_GMP_LIB="${MY_GMP_INSTALL}/lib"
-CBBINOM_MPFR_LIB="${MY_MPFR_INSTALL}/lib"
-```
+If you are running R from an isolated environment (e.g. `conda`), you
+need to first activate the environment, and then build the system
+requirements and the package in the same environment to avoid version
+conflicts such as: undefined reference to `memcpy@GLIBC#.#.#`.
 
 ### The package
+
+If the requirements are installed into their default paths (e.g. without
+using the `--prefix` option), you are OK to go ahead installing the
+package in R, as `pkg-config` will take care finding them.
 
 You can install the released version of `cbbinom` from
 [CRAN](https://cran.r-project.org/) with:
@@ -96,6 +70,40 @@ from [github](https://github.com/) with:
 
 ``` r
 remotes::install_github("zhuxr11/cbbinom")
+```
+
+However, if the requirements are not installed into their default paths,
+you may first need to provide configuration arguments/variables to
+installation paths in one of the following ways (replacing
+`<my_gmp_install>` and `<my_mpfr_install>` with your paths) before
+installing the package with `R CMD INSTALL` in bash:
+
+- Set `--configure-args` in `R CMD INSTALL`:
+
+``` bash
+MY_GMP_INSTALL='<my_gmp_install>'
+MY_MPFR_INSTALL='<my_mpfr_install>'
+R CMD INSTALL cbbinom \
+  --configure-args="\
+    --with-gmp-include=${MY_GMP_INSTALL}/include \
+    --with-mpfr-include=${MY_MPFR_INSTALL}/include \
+    --with-gmp-lib=${MY_GMP_INSTALL}/lib \
+    --with-mpfr-lib=${MY_MPFR_INSTALL}/lib\
+  "
+```
+
+- Set `--configure-vars` in `R CMD INSTALL`:
+
+``` bash
+MY_GMP_INSTALL='<my_gmp_install>'
+MY_MPFR_INSTALL='<my_mpfr_install>'
+R CMD INSTALL cbbinom \
+  --configure-vars="\
+    CBBINOM_GMP_INCLUDE=${MY_GMP_INSTALL}/include \
+    CBBINOM_MPFR_INCLUDE=${MY_MPFR_INSTALL}/include \
+    CBBINOM_GMP_LIB=${MY_GMP_INSTALL}/lib \
+    CBBINOM_MPFR_LIB=${MY_MPFR_INSTALL}/lib\
+  "
 ```
 
 ## Introduction to continuous beta-binomial distribution
@@ -212,7 +220,7 @@ system.time(pcbbinom_plot_prec0_y <- pcbbinom(
   prec = NULL
 ))
 #>    user  system elapsed 
-#>    0.06    0.00    0.07
+#>    0.06    0.00    0.06
 ```
 
 ``` r
@@ -236,7 +244,7 @@ system.time(pcbbinom_plot_prec20_y <- pcbbinom(
   prec = 20L
 ))
 #>    user  system elapsed 
-#>    3.75    0.00    3.77
+#>    3.67    0.00    3.67
 ```
 
 ``` r
@@ -271,7 +279,7 @@ system.time(dcbbinom_plot_prec20_y <- dcbbinom(
 #> 4.000000)]/dq = -0.000206 < 0, which is set to 0, since probability density
 #> cannot be negative; you may use a higher [prec] level than 20
 #>    user  system elapsed 
-#>   27.22    0.02   27.26
+#>   27.19    0.05   27.37
 ```
 
 ``` r
@@ -295,7 +303,7 @@ system.time(dcbbinom_plot_prec25_y <- dcbbinom(
   prec = 25L
 ))
 #>    user  system elapsed 
-#>   38.67    0.03   38.86
+#>   38.43    0.01   38.53
 ```
 
 ``` r

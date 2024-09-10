@@ -48,8 +48,8 @@ AC_ARG_WITH([gmp-lib],
 if test [ -n "$gmp_lib_path" ] ; then
    LIBS="-L${gmp_lib_path} -lgmp ${LIBS}"
 else
-  if test [ -n "${CBBINOM_GMP_LIBS}" ] ; then
-     LIBS="-L${CBBINOM_GMP_LIBS} -lgmp ${LIBS}"
+  if test [ -n "${CBBINOM_GMP_LIB}" ] ; then
+     LIBS="-L${CBBINOM_GMP_LIB} -lgmp ${LIBS}"
   else
     if test [ -n "${PKG_CONFIG}" ]; then
       GMP_LIBS_PKG_CONFIG=`"${PKG_CONFIG}" --libs gmp`
@@ -65,8 +65,8 @@ AC_ARG_WITH([mpfr-lib],
 if test [ -n "$mpfr_lib_path" ] ; then
    LIBS="-L${mpfr_lib_path} -lmpfr ${LIBS}"
 else
-  if test [ -n "${CBBINOM_MPFR_LIBS}" ] ; then
-     LIBS="-L${CBBINOM_MPFR_LIBS} -lmpfr ${LIBS}"
+  if test [ -n "${CBBINOM_MPFR_LIB}" ] ; then
+     LIBS="-L${CBBINOM_MPFR_LIB} -lmpfr ${LIBS}"
   else
     if test [ -n "${PKG_CONFIG}" ]; then
       MPFR_LIBS_PKG_CONFIG=`"${PKG_CONFIG}" --libs mpfr`
@@ -89,55 +89,44 @@ CPPFLAGS="${CPPFLAGS} ${CBBINOM_CPPFLAGS}"
 
 dnl Check the headers can be found
 AC_CHECK_HEADERS(mpfr.h gmp.h)
+missing_header=""
 if test "${ac_cv_header_gmp_h}" = no; then
+  missing_header="${missing_header} 'gmp'"
+fi
+if test "${ac_cv_header_mpfr_h}" = no; then
+  missing_header="${missing_header} 'mpfr'"
+fi
+if test [ ${missing_header} ]; then
   AC_MSG_FAILURE([
   ---------------------------------------------
-   'gmp' and its header files are required.
+  ${missing_header} and their (its) header files are required.
 
    Please install:
 
-   * For Windows with rtools40 or newer: pacman -Syu make pkg-config gmp
-   * For macOS: brew install gmp
-   * For Linux: (please find out platform-specific 'gmp' library and build from source)
+   * For Windows with rtools40 or newer: pacman -Syu make pkg-config libtool${missing_header}
+   * For macOS: brew install${missing_header}
+   * For Linux: (please find out platform-specific${missing_header} and build from source)
 
    and try again.
 
-   If you believe this library is installed on your system but
+   If you believe the libraries are installed on your system but
    this script is simply unable to find it, you can specify the
-   include and lib paths manually:
+   include and lib paths manually in one of the following ways:
 
    R CMD INSTALL ${PACKAGE_NAME} \\
-     --configure-vars='\\
+     --configure-args='\\
        --with-gmp-include=GMP_INCLUDE_PATH \\
        --with-mpfr-include=MPFR_INCLUDE_PATH \\
        --with-gmp-lib=GMP_LIB_PATH \\
        --with-mpfr-lib=MPFR_LIB_PATH\\
      '
-  ---------------------------------------------])
-fi
-if test "${ac_cv_header_mpfr_h}" = no; then
-  AC_MSG_FAILURE([
-  ---------------------------------------------
-   'mpfr' and its header files are required.
-
-   Please install:
-
-   * For Windows with rtools40 or newer: pacman -Syu make pkg-config mpfr
-   * For macOS: brew install mpfr
-   * For Linux: (please find out platform-specific 'mpfr' library and build from source)
-
-   and try again.
-
-   If you believe this library is installed on your system but
-   this script is simply unable to find it, you can specify the
-   include and lib paths manually:
 
    R CMD INSTALL ${PACKAGE_NAME} \\
      --configure-vars='\\
-       --with-gmp-include=GMP_INCLUDE_PATH \\
-       --with-mpfr-include=MPFR_INCLUDE_PATH \\
-       --with-gmp-lib=GMP_LIB_PATH \\
-       --with-mpfr-lib=MPFR_LIB_PATH\\
+       CBBINOM_GMP_INCLUDE=GMP_INCLUDE_PATH \\
+       CBBINOM_MPFR_INCLUDE=MPFR_INCLUDE_PATH \\
+       CBBINOM_GMP_LIB=GMP_LIB_PATH \\
+       CBBINOM_MPFR_LIB=MPFR_LIB_PATH\\
      '
   ---------------------------------------------])
 fi
