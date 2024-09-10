@@ -271,6 +271,63 @@ rcbbinom(n = 10L, size = 10, alpha = 2, beta = 4)
 
 For mathematical details, please check the details section of `?cbbinom`.
 
+## High-precision generalized hypergeometric function
+
+The computation of the continuous beta-binomial CDF relies on high-precision generalized hypergeometric function.
+
+According to [Matlab Online](https://matlab.mathworks.com/), the generalized hypergeometric function underlying `cbbinom::pcbbinom(q = 29.2, size = 40, alpha = 2, beta = 4)` is evaluated as:
+
+```
+>> hypergeom([1-29.2 40+1-29.2 40+1-29.2+4], [40+2-29.2 40+1-29.2+2+4], 1)
+
+ans =
+
+   2.7120e-09
+```
+
+Currently, package [`hypergeo`](https://cran.r-project.org/package=hypergeo) offers a function `genhypergeo()` but it lacks precision in some cases.
+
+```{r genhypergeo-hypergeo}
+hypergeo_q <- 29.2
+hypergeo_size <- 40
+hypergeo_alpha <- 2
+hypergeo_beta <- 4
+hypergeo_U <- c(1 - hypergeo_q,
+                hypergeo_size + 1 - hypergeo_q,
+                hypergeo_size + 1 - hypergeo_q + hypergeo_beta)
+hypergeo_L <- c(hypergeo_size + 2 - hypergeo_q,
+                hypergeo_size + 1 - hypergeo_q + hypergeo_alpha + hypergeo_beta)
+hypergeo_x <- 1
+hypergeo::genhypergeo(U = hypergeo_U, L = hypergeo_L, z = hypergeo_x)
+```
+
+This results in a cumulative distribution value greater than 1:
+
+```{r genhypergeo-hypergeo-p}
+gamma(hypergeo_size + 1) *
+  beta(hypergeo_size + 1 - hypergeo_q + hypergeo_beta, hypergeo_alpha) /
+  gamma(hypergeo_q) /
+  gamma(hypergeo_size + 2 - hypergeo_q) /
+  beta(hypergeo_alpha, hypergeo_beta) *
+  hypergeo::genhypergeo(U = hypergeo_U, L = hypergeo_L, z = hypergeo_x)
+```
+
+When computing with double precision, the implementation in `cbbinom` also lacks precision, although much better compared with `hypergeo::genhypergeo()`:
+
+```{r genhypergeo-boost-double}
+cbbinom::gen_hypergeo(U = hypergeo_U, L = hypergeo_L, x = hypergeo_x,
+                      prec = NULL, check_mode = TRUE, log = FALSE)
+```
+
+However, when computing with `mpfr` floating-point datatype with a precision of 20 digits, the implementation in `cbbinom` gives a precise answer:
+
+```{r genhypergeo-boost-mpfr}
+cbbinom::gen_hypergeo(U = hypergeo_U, L = hypergeo_L, x = hypergeo_x,
+                      prec = 20L, check_mode = TRUE, log = FALSE)
+```
+
+In conclusion, the use of `mpfr` floating-point datatype facilitates precise computation of generalized hypergeometric functions, thus giving precise results from the continuous beta-binomial functions.
+
 ## `Rcpp` implementation of `stats::uniroot()`
 
 As a bonus, `cbbinom` also exports an `Rcpp` implementation of `stats::uniroot()` function, which may come in handy to solve equations, especially the monotonic ones used in quantile functions. Here is an example to calculate `qnorm` from `pnorm` in `Rcpp`.
