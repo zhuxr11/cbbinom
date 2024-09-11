@@ -16,7 +16,7 @@ stats](https://cranlogs.r-pkg.org/badges/grand-total/cbbinom)](https://CRAN.R-pr
 
 **Package**: [*cbbinom*](https://github.com/zhuxr11/cbbinom)
 0.1.0.9000<br /> **Author**: Xiurui Zhu<br /> **Modified**: 2024-09-11
-00:14:30<br /> **Compiled**: 2024-09-11 00:14:36
+22:59:35<br /> **Compiled**: 2024-09-11 22:59:40
 
 The goal of `cbbinom` is to implement continuous beta-binomial
 distribution.
@@ -220,7 +220,7 @@ system.time(pcbbinom_plot_prec0_y <- pcbbinom(
   prec = NULL
 ))
 #>    user  system elapsed 
-#>    0.08    0.00    0.08
+#>    0.06    0.00    0.07
 ```
 
 ``` r
@@ -244,7 +244,7 @@ system.time(pcbbinom_plot_prec20_y <- pcbbinom(
   prec = 20L
 ))
 #>    user  system elapsed 
-#>    3.64    0.00    3.64
+#>    3.70    0.01    3.72
 ```
 
 ``` r
@@ -279,7 +279,7 @@ system.time(dcbbinom_plot_prec20_y <- dcbbinom(
 #> 4.000000)]/dq = -0.000206 < 0, which is set to 0, since probability density
 #> cannot be negative; you may use a higher [prec] level than 20
 #>    user  system elapsed 
-#>   27.29    0.00   27.36
+#>   27.65    0.05   27.89
 ```
 
 ``` r
@@ -303,7 +303,7 @@ system.time(dcbbinom_plot_prec25_y <- dcbbinom(
   prec = 25L
 ))
 #>    user  system elapsed 
-#>   38.45    0.02   38.60
+#>   39.04    0.06   39.42
 ```
 
 ``` r
@@ -348,6 +348,10 @@ rcbbinom(n = 10L, size = 10, alpha = 2, beta = 4)
 #>  [1] 3.359039 3.038286 7.110936 1.311321 5.264688 8.709005 6.720415 1.164210
 #>  [9] 3.868370 1.332590
 ```
+
+These functions are also available in `Rcpp` as
+`cbbinom::cpp_*cbbinom()`, when using `[[Rcpp::depends(cbbinom)]]` and
+`#include <cbbinom.h>`.
 
 For mathematical details, please check the details section of
 `?cbbinom`.
@@ -418,6 +422,9 @@ cbbinom::gen_hypergeo(U = hypergeo_U, L = hypergeo_L, x = hypergeo_x,
                       prec = 20L, check_mode = TRUE, log = FALSE)
 #> [1] 2.712035e-09
 ```
+
+This functions is also available in `Rcpp` as `cbbinom::gen_hypergeo()`,
+when using `[[Rcpp::depends(cbbinom)]]` and `#include <cbbinom.h>`.
 
 In conclusion, the use of `mpfr` floating-point datatype facilitates
 precise computation of generalized hypergeometric functions, thus giving

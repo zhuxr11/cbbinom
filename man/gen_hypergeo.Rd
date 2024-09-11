@@ -26,6 +26,9 @@ Warnings are issued if failing to converge.
 }
 \description{
 \code{gen_hypergeo} computes generalized hypergeometric function.
+This function is also available in \code{\link[Rcpp:Rcpp-package]{Rcpp}}
+as \code{cbbinom::gen_hypergeo()}, when using \code{[[Rcpp::depends(cbbinom)]]}
+and \code{#include <cbbinom.h>}.
 }
 \note{
 Change log:

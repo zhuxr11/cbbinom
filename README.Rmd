@@ -269,6 +269,8 @@ set.seed(1111L)
 rcbbinom(n = 10L, size = 10, alpha = 2, beta = 4)
 ```
 
+These functions are also available in `Rcpp` as `cbbinom::cpp_*cbbinom()`, when using `[[Rcpp::depends(cbbinom)]]` and `#include <cbbinom.h>`.
+
 For mathematical details, please check the details section of `?cbbinom`.
 
 ## High-precision generalized hypergeometric function
@@ -325,6 +327,8 @@ However, when computing with `mpfr` floating-point datatype with a precision of 
 cbbinom::gen_hypergeo(U = hypergeo_U, L = hypergeo_L, x = hypergeo_x,
                       prec = 20L, check_mode = TRUE, log = FALSE)
 ```
+
+This functions is also available in `Rcpp` as `cbbinom::gen_hypergeo()`, when using `[[Rcpp::depends(cbbinom)]]` and `#include <cbbinom.h>`.
 
 In conclusion, the use of `mpfr` floating-point datatype facilitates precise computation of generalized hypergeometric functions, thus giving precise results from the continuous beta-binomial functions.
 

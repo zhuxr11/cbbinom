@@ -21,6 +21,9 @@ std::vector<T3> conv_vec_prec(const T1& x) {
 //' Generalized hypergeometric function
 //'
 //' \code{gen_hypergeo} computes generalized hypergeometric function.
+//' This function is also available in \code{\link[Rcpp:Rcpp-package]{Rcpp}}
+//' as \code{cbbinom::gen_hypergeo()}, when using \code{[[Rcpp::depends(cbbinom)]]}
+//' and \code{#include <cbbinom.h>}.
 //'
 //' @param U,L Numeric vectors for upper and lower values.
 //' @param x Numeric (1L) as common ratio.

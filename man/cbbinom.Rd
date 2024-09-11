@@ -87,7 +87,9 @@ Density, distribution function, quantile function and random generation for
 a continuous analog to the beta-binomial distribution with parameters \code{size}
 \code{alpha} and \code{beta}. The usage and help pages are modeled
 on the d-p-q-r families of functions for the commonly-used distributions
-in the \code{stats} package.
+in the \code{stats} package. These functions are also available in
+\code{\link[Rcpp:Rcpp-package]{Rcpp}} as \code{cbbinom::cpp_*cbbinom()},
+when using \code{[[Rcpp::depends(cbbinom)]]} and \code{#include <cbbinom.h>}.
 }
 \details{
 Derived from the continuous binomial distribution (Ilienko 2013), the continuous beta-binomial
