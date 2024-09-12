@@ -21,7 +21,7 @@ Nullable<T2> nullable_getv(const Nullable<T1>& x, const int& idx) {
   if (x.isNull()) {
     return R_NilValue;
   }
-  T2 x_vec = as<T2>(x);
+  T1 x_vec = as<T1>(x);
   T2 out(1, GETV(x_vec, idx));
   return out;
 }
