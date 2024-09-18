@@ -16,7 +16,7 @@
 #'
 #' When simplified, the distribution becomes:
 #' \deqn{P(x|n,\alpha,\beta)=\frac{\Gamma(n+1)B(n+1-x+\beta,\alpha)}{\Gamma(x)\Gamma(n+2-x)B(\alpha,\beta)}{}_3F_2(a;b;z),}
-#' where \eqn{{}_3F_2(a;b;z)} is [generalized hypergeometric function][gen_hypergeo], \eqn{a=\{1-x,n+1-x,n+1-x+\beta\}},
+#' where \eqn{{}_3F_2(a;b;z)} is \link[hypergeo2:genhypergeo]{generalized hypergeometric function}, \eqn{a=\{1-x,n+1-x,n+1-x+\beta\}},
 #' \eqn{b=\{n+2-x,n+1-x+\alpha+\beta\}}, \eqn{z=1}.
 #'
 #' Heuristically speaking, this distribution spreads the standard probability mass
@@ -33,7 +33,7 @@
 #' @param alpha,beta non-negative parameters of the Beta distribution.
 #' @inheritParams stats::Binomial
 #' @inheritParams stats::Beta
-#' @param prec arguments passed on to \code{\link{gen_hypergeo}},
+#' @param prec arguments passed on to \code{\link[hypergeo2]{genhypergeo}},
 #' vectorized and recycled along with distribution parameters.
 #' @param tol,max_iter arguments passed on to \code{\link[stats]{uniroot}},
 #' vectorized and recycled along with distribution parameters.
@@ -53,7 +53,7 @@
 #' @note Change log:
 #' \itemize{
 #'   \item{0.1.0 Xiurui Zhu - Initiate the function.}
-#'   \item{0.1.1 Xiurui Zhu - Re-implement distribution function with \code{BH} package,
+#'   \item{0.2.0 Xiurui Zhu - Re-implement distribution function with \code{BH} package,
 #'     add \code{NULL} default tolerance, and add precision parameters.}
 #' }
 #'

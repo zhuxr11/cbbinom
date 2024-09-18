@@ -2,8 +2,6 @@
 
 ## Bug fixes
 
-* Fix a bug in `gen_hypergeo()` that may change input `U` and `L`.
-
 * Fix a bug in `cpp_qcbbinom()` that may change input `p`, `tol` and `max_iter`.
 
 ## Enhancements
@@ -14,7 +12,7 @@
 
 * Add precision level in generalized hypergeometric functions for flexible trade-off of computational accuracy and time.
 
-* Use `mpfr` library to evaluate `gen_hypergeo()` at user-defined accuracy.
+* Use `hypergeo2` package to compute generalized hypergeometric function at high precision.
 
 
 # cbbinom 0.1.0

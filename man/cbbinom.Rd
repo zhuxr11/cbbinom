@@ -56,7 +56,7 @@ rcbbinom(
 
 \item{log, log.p}{logical; if TRUE, probabilities p are given as log(p).}
 
-\item{prec}{arguments passed on to \code{\link{gen_hypergeo}},
+\item{prec}{arguments passed on to \code{\link[hypergeo2]{genhypergeo}},
 vectorized and recycled along with distribution parameters.}
 
 \item{lower.tail}{logical; if TRUE (default), probabilities are
@@ -100,7 +100,7 @@ is the incomplete beta function.
 
 When simplified, the distribution becomes:
 \deqn{P(x|n,\alpha,\beta)=\frac{\Gamma(n+1)B(n+1-x+\beta,\alpha)}{\Gamma(x)\Gamma(n+2-x)B(\alpha,\beta)}{}_3F_2(a;b;z),}
-where \eqn{{}_3F_2(a;b;z)} is \link[=gen_hypergeo]{generalized hypergeometric function}, \eqn{a=\{1-x,n+1-x,n+1-x+\beta\}},
+where \eqn{{}_3F_2(a;b;z)} is \link[hypergeo2:genhypergeo]{generalized hypergeometric function}, \eqn{a=\{1-x,n+1-x,n+1-x+\beta\}},
 \eqn{b=\{n+2-x,n+1-x+\alpha+\beta\}}, \eqn{z=1}.
 
 Heuristically speaking, this distribution spreads the standard probability mass
@@ -117,7 +117,7 @@ to build a continuous beta-binomial with approximately non-shifted mean, use \co
 Change log:
 \itemize{
 \item{0.1.0 Xiurui Zhu - Initiate the function.}
-\item{0.1.1 Xiurui Zhu - Re-implement distribution function with \code{BH} package,
+\item{0.2.0 Xiurui Zhu - Re-implement distribution function with \code{BH} package,
 add \code{NULL} default tolerance, and add precision parameters.}
 }
 }
