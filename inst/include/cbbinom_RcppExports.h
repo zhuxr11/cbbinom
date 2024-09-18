@@ -108,27 +108,6 @@ namespace cbbinom {
         return Rcpp::as<NumericVector >(rcpp_result_gen);
     }
 
-    inline double gen_hypergeo(const NumericVector& U, const NumericVector& L, const double& x, const Nullable<IntegerVector>& prec, const bool& check_mode, const bool& log) {
-        typedef SEXP(*Ptr_gen_hypergeo)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
-        static Ptr_gen_hypergeo p_gen_hypergeo = NULL;
-        if (p_gen_hypergeo == NULL) {
-            validateSignature("double(*gen_hypergeo)(const NumericVector&,const NumericVector&,const double&,const Nullable<IntegerVector>&,const bool&,const bool&)");
-            p_gen_hypergeo = (Ptr_gen_hypergeo)R_GetCCallable("cbbinom", "_cbbinom_gen_hypergeo");
-        }
-        RObject rcpp_result_gen;
-        {
-            RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_gen_hypergeo(Shield<SEXP>(Rcpp::wrap(U)), Shield<SEXP>(Rcpp::wrap(L)), Shield<SEXP>(Rcpp::wrap(x)), Shield<SEXP>(Rcpp::wrap(prec)), Shield<SEXP>(Rcpp::wrap(check_mode)), Shield<SEXP>(Rcpp::wrap(log)));
-        }
-        if (rcpp_result_gen.inherits("interrupted-error"))
-            throw Rcpp::internal::InterruptedException();
-        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
-            throw Rcpp::LongjumpException(rcpp_result_gen);
-        if (rcpp_result_gen.inherits("try-error"))
-            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
-        return Rcpp::as<double >(rcpp_result_gen);
-    }
-
 }
 
 #endif // RCPP_cbbinom_RCPPEXPORTS_H_GEN_

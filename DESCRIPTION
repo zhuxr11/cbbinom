@@ -9,7 +9,6 @@ License: MIT + file LICENSE
 Suggests: 
     extraDistr,
     ggplot2,
-    hypergeo,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Encoding: UTF-8
@@ -17,9 +16,9 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 LinkingTo: 
     BH,
+    hypergeo2,
     Rcpp
 Imports: 
     Rcpp
 URL: https://github.com/zhuxr11/cbbinom
 BugReports: https://github.com/zhuxr11/cbbinom/issues
-SystemRequirements: gmp, mpfr

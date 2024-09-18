@@ -17,41 +17,6 @@ cpp_rcbbinom <- function(n, size, alpha, beta, prec, tol, max_iter) {
     .Call(`_cbbinom_cpp_rcbbinom`, n, size, alpha, beta, prec, tol, max_iter)
 }
 
-#' Generalized hypergeometric function
-#'
-#' \code{gen_hypergeo} computes generalized hypergeometric function.
-#' This function is also available in \code{\link[Rcpp:Rcpp-package]{Rcpp}}
-#' as \code{cbbinom::gen_hypergeo()}, when using \code{[[Rcpp::depends(cbbinom)]]}
-#' and \code{#include <cbbinom.h>}.
-#'
-#' @param U,L Numeric vectors for upper and lower values.
-#' @param x Numeric (1L) as common ratio.
-#' @param prec \code{NULL} or (unsigned) integer (1L) as precision level during computation,
-#' a.k.a the number of precise digits defined in \code{boost::multiprecision::mpfr_float}.
-#' For \code{NULL}, double precision (default) is used.
-#' @param check_mode Logical (1L) indicating whether the mode of \code{x}
-#' should be checked for obvious convergence failures.
-#' @param log Logical (1L) indicating whether result is given as log(result).
-#'
-#' @return Numeric (1L) as the result of computation (at \code{double} precision).
-#' Warnings are issued if failing to converge.
-#'
-#' @note Change log:
-#' \itemize{
-#'   \item{0.1.0 Xiurui Zhu - Initiate the function.}
-#'   \item{0.1.1 Xiurui Zhu - Use \code{boost} for higher accuracy.}
-#' }
-#' @author Xiurui Zhu
-#'
-#' @export
-#'
-#' @examples
-#' gen_hypergeo(U = c(1.1, 0.2, 0.3), L = c(10.1, 4 * pi), x = 1,
-#'              prec = NULL, check_mode = TRUE, log = FALSE)
-gen_hypergeo <- function(U, L, x, prec, check_mode, log) {
-    .Call(`_cbbinom_gen_hypergeo`, U, L, x, prec, check_mode, log)
-}
-
 # Register entry points for exported C++ functions
 methods::setLoadAction(function(ns) {
     .Call(`_cbbinom_RcppExport_registerCCallable`)

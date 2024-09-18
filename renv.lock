@@ -169,13 +169,6 @@
       ],
       "Hash": "bb4341986bc8b914f0f0acf2e4a3f2f7"
     },
-    "contfrac": {
-      "Package": "contfrac",
-      "Version": "1.1-12",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "57120b229b87ba5206eb33c5b6f04f75"
-    },
     "crayon": {
       "Package": "crayon",
       "Version": "1.5.3",
@@ -187,20 +180,6 @@
         "utils"
       ],
       "Hash": "859d96e65ef198fd43e82b9628d593ef"
-    },
-    "deSolve": {
-      "Package": "deSolve",
-      "Version": "1.40",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "grDevices",
-        "graphics",
-        "methods",
-        "stats"
-      ],
-      "Hash": "0a861334beb4eb8ca0d24a27b28b6679"
     },
     "desc": {
       "Package": "desc",
@@ -240,17 +219,6 @@
         "utils"
       ],
       "Hash": "fd6824ad91ede64151e93af67df6376b"
-    },
-    "elliptic": {
-      "Package": "elliptic",
-      "Version": "1.4-0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "MASS",
-        "R"
-      ],
-      "Hash": "4ad4fc696f70fece9399140246f409f3"
     },
     "evaluate": {
       "Package": "evaluate",
@@ -401,18 +369,16 @@
       ],
       "Hash": "81d371a9cc60640e74e4ab6ac46dcedc"
     },
-    "hypergeo": {
-      "Package": "hypergeo",
-      "Version": "1.2-13",
+    "hypergeo2": {
+      "Package": "hypergeo2",
+      "Version": "0.1.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
-        "R",
-        "contfrac",
-        "deSolve",
-        "elliptic"
+        "BH",
+        "Rcpp"
       ],
-      "Hash": "3195e099bdbe91e28310c818d925d471"
+      "Hash": "49731e150a257cf88a382086ee5be4cc"
     },
     "isoband": {
       "Package": "isoband",

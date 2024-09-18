@@ -1,5 +1,2 @@
 .Rproj.user
-autom4te.cache
-config.log
-config.status
-src/config.h
+.Rhistory

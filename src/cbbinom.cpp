@@ -1,10 +1,12 @@
-#include "hypergeo.h"
 #include "../inst/include/cbbinom/uniroot.h"
 #include "boost/math/differentiation/finite_difference.hpp"
+#include "boost/multiprecision/gmp.hpp"
+#include <hypergeo2.h>
 #include <Rcpp.h>
 using namespace Rcpp;
 
 // [[Rcpp::depends(BH)]]
+// [[Rcpp::depends(hypergeo2)]]
 
 // Macros
 
@@ -24,6 +26,40 @@ Nullable<T2> nullable_getv(const Nullable<T1>& x, const int& idx) {
   T1 x_vec = as<T1>(x);
   T2 out(1, GETV(x_vec, idx));
   return out;
+}
+
+double gen_hypergeo(const double& q,
+                    const double& size,
+                    const double& alpha,
+                    const double& beta,
+                    const Nullable<IntegerVector>& prec) {
+  NumericVector U = {1.0 - q, size + 1.0 - q, size + 1.0 - q + beta};
+  NumericVector L = {size + 2.0 - q, size + 1.0 - q + alpha + beta};
+  NumericVector z = {1.0};
+  NumericVector out;
+  if (prec.isNull()) {
+    out = hypergeo2::genhypergeo_vec(
+      List::create(U),
+      List::create(L),
+      z,
+      R_NilValue,
+      true,  // check_mode
+      false,  // log
+      "gmp"  // backend
+    );
+  } else {
+    int prec_use = as<IntegerVector>(prec)(0);
+    out = hypergeo2::genhypergeo_vec(
+      List::create(U),
+      List::create(L),
+      z,
+      List::create(prec_use),
+      true,  // check_mode
+      false,  // log
+      "gmp"  // backend
+    );
+  }
+  return out(0);
 }
 
 // Non-vectorized core functions
@@ -58,12 +94,7 @@ double pcbbinom_(
   // Coefficients
   double coef_log = R::lgammafn(size + 1.0) + R::lbeta(size + 1.0 - q + beta, alpha) -
     R::lgammafn(q) - R::lgammafn(size + 2.0 - q) - R::lbeta(alpha, beta);
-  // Upper vector
-  NumericVector U = {1.0 - q, size + 1.0 - q, size + 1.0 - q + beta};
-  // Lower vector
-  NumericVector L = {size + 2.0 - q, size + 1.0 - q + alpha + beta};
-  // Final value
-  double out = std::exp(coef_log + gen_hypergeo(U, L, 1.0, prec, true, true));
+  double out = std::exp(coef_log) * gen_hypergeo(q, size, alpha, beta, prec);
   if (lower_tail == false) {
     out = 1 - out;
   }

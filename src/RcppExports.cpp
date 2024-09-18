@@ -174,45 +174,6 @@ RcppExport SEXP _cbbinom_cpp_rcbbinom(SEXP nSEXP, SEXP sizeSEXP, SEXP alphaSEXP,
     UNPROTECT(1);
     return rcpp_result_gen;
 }
-// gen_hypergeo
-double gen_hypergeo(const NumericVector& U, const NumericVector& L, const double& x, const Nullable<IntegerVector>& prec, const bool& check_mode, const bool& log);
-static SEXP _cbbinom_gen_hypergeo_try(SEXP USEXP, SEXP LSEXP, SEXP xSEXP, SEXP precSEXP, SEXP check_modeSEXP, SEXP logSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< const NumericVector& >::type U(USEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type L(LSEXP);
-    Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const Nullable<IntegerVector>& >::type prec(precSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type check_mode(check_modeSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type log(logSEXP);
-    rcpp_result_gen = Rcpp::wrap(gen_hypergeo(U, L, x, prec, check_mode, log));
-    return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP _cbbinom_gen_hypergeo(SEXP USEXP, SEXP LSEXP, SEXP xSEXP, SEXP precSEXP, SEXP check_modeSEXP, SEXP logSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_cbbinom_gen_hypergeo_try(USEXP, LSEXP, xSEXP, precSEXP, check_modeSEXP, logSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
-    if (rcpp_isLongjump_gen) {
-        Rcpp::internal::resumeJump(rcpp_result_gen);
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
-    return rcpp_result_gen;
-}
 
 // validate (ensure exported C++ functions exist before calling them)
 static int _cbbinom_RcppExport_validate(const char* sig) { 
@@ -222,7 +183,6 @@ static int _cbbinom_RcppExport_validate(const char* sig) {
         signatures.insert("NumericVector(*cpp_qcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const bool&,const Nullable<IntegerVector>&,const NumericVector&,const IntegerVector&)");
         signatures.insert("NumericVector(*cpp_dcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const Nullable<IntegerVector>&)");
         signatures.insert("NumericVector(*cpp_rcbbinom)(const int&,const NumericVector&,const NumericVector&,const NumericVector&,const Nullable<IntegerVector>&,const NumericVector&,const IntegerVector&)");
-        signatures.insert("double(*gen_hypergeo)(const NumericVector&,const NumericVector&,const double&,const Nullable<IntegerVector>&,const bool&,const bool&)");
     }
     return signatures.find(sig) != signatures.end();
 }
@@ -233,7 +193,6 @@ RcppExport SEXP _cbbinom_RcppExport_registerCCallable() {
     R_RegisterCCallable("cbbinom", "_cbbinom_cpp_qcbbinom", (DL_FUNC)_cbbinom_cpp_qcbbinom_try);
     R_RegisterCCallable("cbbinom", "_cbbinom_cpp_dcbbinom", (DL_FUNC)_cbbinom_cpp_dcbbinom_try);
     R_RegisterCCallable("cbbinom", "_cbbinom_cpp_rcbbinom", (DL_FUNC)_cbbinom_cpp_rcbbinom_try);
-    R_RegisterCCallable("cbbinom", "_cbbinom_gen_hypergeo", (DL_FUNC)_cbbinom_gen_hypergeo_try);
     R_RegisterCCallable("cbbinom", "_cbbinom_RcppExport_validate", (DL_FUNC)_cbbinom_RcppExport_validate);
     return R_NilValue;
 }
@@ -243,7 +202,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_cbbinom_cpp_qcbbinom", (DL_FUNC) &_cbbinom_cpp_qcbbinom, 9},
     {"_cbbinom_cpp_dcbbinom", (DL_FUNC) &_cbbinom_cpp_dcbbinom, 6},
     {"_cbbinom_cpp_rcbbinom", (DL_FUNC) &_cbbinom_cpp_rcbbinom, 7},
-    {"_cbbinom_gen_hypergeo", (DL_FUNC) &_cbbinom_gen_hypergeo, 6},
     {"_cbbinom_RcppExport_registerCCallable", (DL_FUNC) &_cbbinom_RcppExport_registerCCallable, 0},
     {NULL, NULL, 0}
 };
