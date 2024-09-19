@@ -1,7 +1,7 @@
-#include "../inst/include/cbbinom/uniroot.h"
-#include "boost/math/differentiation/finite_difference.hpp"
 #include <hypergeo2.h>
 #include <Rcpp.h>
+#include "../inst/include/cbbinom/uniroot.h"
+#include "boost/math/differentiation/finite_difference.hpp"
 using namespace Rcpp;
 
 // [[Rcpp::depends(BH)]]
