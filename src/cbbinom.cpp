@@ -76,7 +76,7 @@ double pcbbinom_(
     const Nullable<IntegerVector>& prec
 ) {
   if (VALID_PARAM(q, size, alpha, beta) == false) {
-    warning("Invalid parameter set: q = %f, size = %f, alpha = %f, beta = %f; returing NaN",
+    warning("Invalid parameter set: q = %g, size = %g, alpha = %g, beta = %g; returing NaN",
             q, size, alpha, beta);
     return R_NaN;
   }
@@ -119,11 +119,13 @@ Real finite_difference_derivative_bound(const F f, Real x, Real low, Real high, 
   using std::abs;
   using std::numeric_limits;
 
+  // Rprintf("x = %g\n", x);
   const Real eps = (numeric_limits<Real>::epsilon)();
   // Error bound ~eps^6/7
   // Error: h^6f^(7)(x)/140 + 5|f(x)|eps/h
   Real h = pow(eps / 168, static_cast<Real>(1) / static_cast<Real>(7));
   h = detail::make_xph_representable(x, h);
+  // Rprintf("h = %g\n", h);
   Real yh = static_cast<Real>(0);
   Real y2h = static_cast<Real>(0);
   Real y3h = static_cast<Real>(0);
@@ -132,24 +134,22 @@ Real finite_difference_derivative_bound(const F f, Real x, Real low, Real high, 
   Real ym3h = static_cast<Real>(0);
 
   Real y = f(x);
-  // Rprintf("x = %f\n", x);
-  // Rprintf("h = %f\n", h);
-  // Rprintf("y = %f\n", y);
+  // Rprintf("y = %g\n", y);
   if (x + 3 * h <= high) {
     yh = f(x + h);
-    // Rprintf("yh = %f\n", yh);
+    // Rprintf("yh = %g\n", yh);
     y2h = f(x + 2 * h);
-    // Rprintf("y2h = %f\n", y2h);
+    // Rprintf("y2h = %g\n", y2h);
     y3h = f(x + 3 * h);
-    // Rprintf("y3h = %f\n", y3h);
+    // Rprintf("y3h = %g\n", y3h);
   }
   if (x - 3 * h >= low) {
     ymh = f(x - h);
-    // Rprintf("ymh = %f\n", ymh);
+    // Rprintf("ymh = %g\n", ymh);
     ym2h = f(x - 2 * h);
-    // Rprintf("ym2h = %f\n", ym2h);
+    // Rprintf("ym2h = %g\n", ym2h);
     ym3h = f(x - 3 * h);
-    // Rprintf("ym3h = %f\n", ym3h);
+    // Rprintf("ym3h = %g\n", ym3h);
   }
 
   if ((x - 3 * h >= low) && (x + 3 * h <= high)) {
@@ -179,7 +179,7 @@ Real finite_difference_derivative_bound(const F f, Real x, Real low, Real high, 
     }
     return (-11 * y + 18 * yh - 9 * y2h + 2 * y3h) / (6 * h);
   } else {
-    stop("Insufficient range: high - low < 6 * %f", h);
+    stop("Insufficient range: high - low < 6 * %g", h);
   }
 }
 
@@ -196,7 +196,7 @@ double dcbbinom_(
     const Nullable<IntegerVector>& prec
 ) {
   if (VALID_PARAM(x, size, alpha, beta) == false) {
-    warning("Invalid parameter set: x = %f, size = %f, alpha = %f, beta = %f; returing NaN",
+    warning("Invalid parameter set: x = %g, size = %g, alpha = %g, beta = %g; returing NaN",
             x, size, alpha, beta);
     return R_NaN;
   }
@@ -213,18 +213,17 @@ double dcbbinom_(
   };
   double out = boost::math::differentiation::finite_difference_derivative_bound(f, x, 0.0, size + 1.0);
   if (out < 0.0) {
-    String base_warning = "d[pcbbinom(q = %f, size = %f, alpha = %f, beta = %f)]/dq = %f < 0, which is set to 0, since probability density cannot be negative";
+    String base_warning = "d[pcbbinom(q = %g, size = %g, alpha = %g, beta = %g)]/dq = %g < 0, which is set to 0, since probability density cannot be negative";
     if (prec.isNotNull()) {
       IntegerVector prec_ = as<IntegerVector>(prec);
       int prec_use = prec_(0);
-      base_warning += "; you may use a higher [prec] level than %f";
+      base_warning += "; you may use a higher [prec] level than %i";
       warning(base_warning.get_cstring(), x, size, alpha, beta, out, prec_use);
     } else {
       warning(base_warning.get_cstring(), x, size, alpha, beta, out);
     }
     out = 0.0;
   }
-  return out;
   if (log == true) {
     out = std::log(out);
   }
@@ -266,11 +265,11 @@ double qcbbinom_(
     p = std::exp(p);
   }
   if (VALID_PROB(p) == false) {
-    warning("Wrong [p] as probability: %f; returning NaN", p);
+    warning("Wrong [p] as probability: %g; returning NaN", p);
     return R_NaN;
   }
   if (VALID_PARAM(0.0, size, alpha, beta) == false) {
-    warning("Invalid parameter set: size = %f, alpha = %f, beta = %f; returing NaN",
+    warning("Invalid parameter set: size = %g, alpha = %g, beta = %g; returing NaN",
             size, alpha, beta);
     return R_NaN;
   }
