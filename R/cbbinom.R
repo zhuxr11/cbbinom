@@ -74,6 +74,16 @@
 #' rcbbinom(n = 10L, size = 10, alpha = 2, beta = 4)
 NULL
 
+# Normalize precision
+norm_prec <- function(prec) {
+  if (is.null(prec) == TRUE) {
+    NULL
+  } else {
+    res <- as.list(prec)
+    lapply(res, function(x) {if (is.null(x) == TRUE) NULL else as.integer(x)})
+  }
+}
+
 #' @aliases dcbbinom
 #' @export
 #' @rdname cbbinom
@@ -83,7 +93,7 @@ dcbbinom <- function(x, size, alpha = 1, beta = 1, ncp = 0, log = FALSE, prec = 
                     alpha = as.numeric(alpha),
                     beta = as.numeric(beta),
                     log = TRUE,
-                    prec = if (is.null(prec) == TRUE) NULL else as.integer(prec))
+                    prec = norm_prec(prec))
   p[is.na(p) == TRUE] <- -Inf
   if (log == FALSE) {
     p <- exp(p)
@@ -102,7 +112,7 @@ pcbbinom <- function(q, size, alpha = 1, beta = 1, ncp = 0,
                beta = as.numeric(beta),
                lower_tail = as.logical(lower.tail[[1L]]),
                log_p = as.logical(log.p[[1L]]),
-               prec = if (is.null(prec) == TRUE) NULL else as.integer(prec))
+               prec = norm_prec(prec))
 }
 
 #' @aliases qcbbinom
@@ -117,7 +127,7 @@ qcbbinom <- function(p, size, alpha = 1, beta = 1, ncp = 0,
                beta = as.numeric(beta),
                lower_tail = as.logical(lower.tail[[1L]]),
                log_p = as.logical(log.p[[1L]]),
-               prec = if (is.null(prec) == TRUE) NULL else as.integer(prec),
+               prec = norm_prec(prec),
                tol = as.numeric(tol),
                max_iter = as.integer(max_iter)) + ncp
 }
@@ -131,7 +141,7 @@ rcbbinom <- function(n, size, alpha = 1, beta = 1, ncp = 0, prec = NULL,
                size = as.numeric(size),
                alpha = as.numeric(alpha),
                beta = as.numeric(beta),
-               prec = if (is.null(prec) == TRUE) NULL else as.integer(prec),
+               prec = norm_prec(prec),
                tol = as.numeric(tol),
                max_iter = as.integer(max_iter)) + ncp
 }

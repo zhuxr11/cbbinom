@@ -14,7 +14,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // cpp_pcbbinom
-NumericVector cpp_pcbbinom(const NumericVector& q, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const bool& lower_tail, const bool& log_p, const Nullable<IntegerVector>& prec);
+NumericVector cpp_pcbbinom(const NumericVector& q, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const bool& lower_tail, const bool& log_p, const Nullable<List>& prec);
 static SEXP _cbbinom_cpp_pcbbinom_try(SEXP qSEXP, SEXP sizeSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP precSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -24,7 +24,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericVector& >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< const bool& >::type lower_tail(lower_tailSEXP);
     Rcpp::traits::input_parameter< const bool& >::type log_p(log_pSEXP);
-    Rcpp::traits::input_parameter< const Nullable<IntegerVector>& >::type prec(precSEXP);
+    Rcpp::traits::input_parameter< const Nullable<List>& >::type prec(precSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_pcbbinom(q, size, alpha, beta, lower_tail, log_p, prec));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
@@ -54,7 +54,7 @@ RcppExport SEXP _cbbinom_cpp_pcbbinom(SEXP qSEXP, SEXP sizeSEXP, SEXP alphaSEXP,
     return rcpp_result_gen;
 }
 // cpp_qcbbinom
-NumericVector cpp_qcbbinom(const NumericVector& p, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const bool& lower_tail, const bool& log_p, const Nullable<IntegerVector>& prec, const NumericVector& tol, const IntegerVector& max_iter);
+NumericVector cpp_qcbbinom(const NumericVector& p, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const bool& lower_tail, const bool& log_p, const Nullable<List>& prec, const NumericVector& tol, const IntegerVector& max_iter);
 static SEXP _cbbinom_cpp_qcbbinom_try(SEXP pSEXP, SEXP sizeSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP precSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -64,7 +64,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericVector& >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< const bool& >::type lower_tail(lower_tailSEXP);
     Rcpp::traits::input_parameter< const bool& >::type log_p(log_pSEXP);
-    Rcpp::traits::input_parameter< const Nullable<IntegerVector>& >::type prec(precSEXP);
+    Rcpp::traits::input_parameter< const Nullable<List>& >::type prec(precSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const IntegerVector& >::type max_iter(max_iterSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_qcbbinom(p, size, alpha, beta, lower_tail, log_p, prec, tol, max_iter));
@@ -96,7 +96,7 @@ RcppExport SEXP _cbbinom_cpp_qcbbinom(SEXP pSEXP, SEXP sizeSEXP, SEXP alphaSEXP,
     return rcpp_result_gen;
 }
 // cpp_dcbbinom
-NumericVector cpp_dcbbinom(const NumericVector& x, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const bool& log, const Nullable<IntegerVector>& prec);
+NumericVector cpp_dcbbinom(const NumericVector& x, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const bool& log, const Nullable<List>& prec);
 static SEXP _cbbinom_cpp_dcbbinom_try(SEXP xSEXP, SEXP sizeSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP logSEXP, SEXP precSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -105,7 +105,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericVector& >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< const bool& >::type log(logSEXP);
-    Rcpp::traits::input_parameter< const Nullable<IntegerVector>& >::type prec(precSEXP);
+    Rcpp::traits::input_parameter< const Nullable<List>& >::type prec(precSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_dcbbinom(x, size, alpha, beta, log, prec));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
@@ -135,7 +135,7 @@ RcppExport SEXP _cbbinom_cpp_dcbbinom(SEXP xSEXP, SEXP sizeSEXP, SEXP alphaSEXP,
     return rcpp_result_gen;
 }
 // cpp_rcbbinom
-NumericVector cpp_rcbbinom(const int& n, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const Nullable<IntegerVector>& prec, const NumericVector& tol, const IntegerVector& max_iter);
+NumericVector cpp_rcbbinom(const int& n, const NumericVector& size, const NumericVector& alpha, const NumericVector& beta, const Nullable<List>& prec, const NumericVector& tol, const IntegerVector& max_iter);
 static SEXP _cbbinom_cpp_rcbbinom_try(SEXP nSEXP, SEXP sizeSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP precSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -143,7 +143,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericVector& >::type size(sizeSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type beta(betaSEXP);
-    Rcpp::traits::input_parameter< const Nullable<IntegerVector>& >::type prec(precSEXP);
+    Rcpp::traits::input_parameter< const Nullable<List>& >::type prec(precSEXP);
     Rcpp::traits::input_parameter< const NumericVector& >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const IntegerVector& >::type max_iter(max_iterSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_rcbbinom(n, size, alpha, beta, prec, tol, max_iter));
@@ -179,10 +179,10 @@ RcppExport SEXP _cbbinom_cpp_rcbbinom(SEXP nSEXP, SEXP sizeSEXP, SEXP alphaSEXP,
 static int _cbbinom_RcppExport_validate(const char* sig) { 
     static std::set<std::string> signatures;
     if (signatures.empty()) {
-        signatures.insert("NumericVector(*cpp_pcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const bool&,const Nullable<IntegerVector>&)");
-        signatures.insert("NumericVector(*cpp_qcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const bool&,const Nullable<IntegerVector>&,const NumericVector&,const IntegerVector&)");
-        signatures.insert("NumericVector(*cpp_dcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const Nullable<IntegerVector>&)");
-        signatures.insert("NumericVector(*cpp_rcbbinom)(const int&,const NumericVector&,const NumericVector&,const NumericVector&,const Nullable<IntegerVector>&,const NumericVector&,const IntegerVector&)");
+        signatures.insert("NumericVector(*cpp_pcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const bool&,const Nullable<List>&)");
+        signatures.insert("NumericVector(*cpp_qcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const bool&,const Nullable<List>&,const NumericVector&,const IntegerVector&)");
+        signatures.insert("NumericVector(*cpp_dcbbinom)(const NumericVector&,const NumericVector&,const NumericVector&,const NumericVector&,const bool&,const Nullable<List>&)");
+        signatures.insert("NumericVector(*cpp_rcbbinom)(const int&,const NumericVector&,const NumericVector&,const NumericVector&,const Nullable<List>&,const NumericVector&,const IntegerVector&)");
     }
     return signatures.find(sig) != signatures.end();
 }

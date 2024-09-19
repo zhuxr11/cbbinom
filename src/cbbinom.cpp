@@ -1,6 +1,5 @@
 #include "../inst/include/cbbinom/uniroot.h"
 #include "boost/math/differentiation/finite_difference.hpp"
-#include "boost/multiprecision/gmp.hpp"
 #include <hypergeo2.h>
 #include <Rcpp.h>
 using namespace Rcpp;
@@ -24,6 +23,9 @@ Nullable<T2> nullable_getv(const Nullable<T1>& x, const int& idx) {
     return R_NilValue;
   }
   T1 x_vec = as<T1>(x);
+  if (GETV(x_vec, idx) == R_NilValue) {
+    return R_NilValue;
+  }
   T2 out(1, GETV(x_vec, idx));
   return out;
 }
@@ -291,7 +293,7 @@ NumericVector cpp_pcbbinom(
     const NumericVector& beta,
     const bool& lower_tail,
     const bool& log_p,
-    const Nullable<IntegerVector>& prec
+    const Nullable<List>& prec
 ) {
   if (std::min({q.length(), size.length(),
                alpha.length(), beta.length()}) < 1) {
@@ -314,7 +316,7 @@ NumericVector cpp_pcbbinom(
       GETV(beta, idx),
       true,   // lower_tail
       false,  // log_p
-      nullable_getv<IntegerVector, IntegerVector>(prec, idx)
+      nullable_getv<List, IntegerVector>(prec, idx)
     );
   }
 
@@ -336,7 +338,7 @@ NumericVector cpp_qcbbinom(
     const NumericVector& beta,
     const bool& lower_tail,
     const bool& log_p,
-    const Nullable<IntegerVector>& prec,
+    const Nullable<List>& prec,
     const NumericVector& tol,
     const IntegerVector& max_iter
 ) {
@@ -371,7 +373,7 @@ NumericVector cpp_qcbbinom(
       GETV(beta, idx),
       true,   // lower_tail
       false,  // log_p
-      nullable_getv<IntegerVector, IntegerVector>(prec, idx),
+      nullable_getv<List, IntegerVector>(prec, idx),
       GETV(tol_, idx),
       GETV(max_iter_, idx)
     );
@@ -387,7 +389,7 @@ NumericVector cpp_dcbbinom(
     const NumericVector& alpha,
     const NumericVector& beta,
     const bool& log,
-    const Nullable<IntegerVector>& prec
+    const Nullable<List>& prec
 ) {
   if (std::min({x.length(), size.length(),
                alpha.length(), beta.length()}) < 1) {
@@ -409,7 +411,7 @@ NumericVector cpp_dcbbinom(
       GETV(alpha, i),
       GETV(beta, i),
       false,
-      nullable_getv<IntegerVector, IntegerVector>(prec, i)
+      nullable_getv<List, IntegerVector>(prec, i)
     );
   }
   if (log == true) {
@@ -425,7 +427,7 @@ NumericVector cpp_rcbbinom(
   const NumericVector& size,
   const NumericVector& alpha,
   const NumericVector& beta,
-  const Nullable<IntegerVector>& prec,
+  const Nullable<List>& prec,
   const NumericVector& tol,
   const IntegerVector& max_iter
 ) {
