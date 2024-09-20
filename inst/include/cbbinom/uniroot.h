@@ -127,4 +127,4 @@ inline double cpp_uniroot(			/* An estimate of the root */
 
 } // namespace cbbinom
 
-#endif
+#endif // CBBINOM_ZEROIN
