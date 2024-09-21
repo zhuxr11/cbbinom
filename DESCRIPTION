@@ -19,6 +19,7 @@ LinkingTo:
     hypergeo2,
     Rcpp
 Imports: 
+    hypergeo2,
     Rcpp
 URL: https://github.com/zhuxr11/cbbinom
 BugReports: https://github.com/zhuxr11/cbbinom/issues
