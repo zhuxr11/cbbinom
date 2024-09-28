@@ -108,6 +108,69 @@ namespace cbbinom {
         return Rcpp::as<NumericVector >(rcpp_result_gen);
     }
 
+    inline double pcbbinom_(const double& q, const double& size, const double& alpha, const double& beta, const bool& lower_tail, const bool& log_p, const Nullable<IntegerVector>& prec) {
+        typedef SEXP(*Ptr_pcbbinom_)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_pcbbinom_ p_pcbbinom_ = NULL;
+        if (p_pcbbinom_ == NULL) {
+            validateSignature("double(*pcbbinom_)(const double&,const double&,const double&,const double&,const bool&,const bool&,const Nullable<IntegerVector>&)");
+            p_pcbbinom_ = (Ptr_pcbbinom_)R_GetCCallable("cbbinom", "_cbbinom_pcbbinom_");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_pcbbinom_(Shield<SEXP>(Rcpp::wrap(q)), Shield<SEXP>(Rcpp::wrap(size)), Shield<SEXP>(Rcpp::wrap(alpha)), Shield<SEXP>(Rcpp::wrap(beta)), Shield<SEXP>(Rcpp::wrap(lower_tail)), Shield<SEXP>(Rcpp::wrap(log_p)), Shield<SEXP>(Rcpp::wrap(prec)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double dcbbinom_(const double& x, const double& size, const double& alpha, const double& beta, const bool& log, const Nullable<IntegerVector>& prec) {
+        typedef SEXP(*Ptr_dcbbinom_)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_dcbbinom_ p_dcbbinom_ = NULL;
+        if (p_dcbbinom_ == NULL) {
+            validateSignature("double(*dcbbinom_)(const double&,const double&,const double&,const double&,const bool&,const Nullable<IntegerVector>&)");
+            p_dcbbinom_ = (Ptr_dcbbinom_)R_GetCCallable("cbbinom", "_cbbinom_dcbbinom_");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_dcbbinom_(Shield<SEXP>(Rcpp::wrap(x)), Shield<SEXP>(Rcpp::wrap(size)), Shield<SEXP>(Rcpp::wrap(alpha)), Shield<SEXP>(Rcpp::wrap(beta)), Shield<SEXP>(Rcpp::wrap(log)), Shield<SEXP>(Rcpp::wrap(prec)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double qcbbinom_(double p, const double& size, const double& alpha, const double& beta, const bool& lower_tail, const bool& log_p, const Nullable<IntegerVector>& prec, double tol, int max_iter) {
+        typedef SEXP(*Ptr_qcbbinom_)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_qcbbinom_ p_qcbbinom_ = NULL;
+        if (p_qcbbinom_ == NULL) {
+            validateSignature("double(*qcbbinom_)(double,const double&,const double&,const double&,const bool&,const bool&,const Nullable<IntegerVector>&,double,int)");
+            p_qcbbinom_ = (Ptr_qcbbinom_)R_GetCCallable("cbbinom", "_cbbinom_qcbbinom_");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_qcbbinom_(Shield<SEXP>(Rcpp::wrap(p)), Shield<SEXP>(Rcpp::wrap(size)), Shield<SEXP>(Rcpp::wrap(alpha)), Shield<SEXP>(Rcpp::wrap(beta)), Shield<SEXP>(Rcpp::wrap(lower_tail)), Shield<SEXP>(Rcpp::wrap(log_p)), Shield<SEXP>(Rcpp::wrap(prec)), Shield<SEXP>(Rcpp::wrap(tol)), Shield<SEXP>(Rcpp::wrap(max_iter)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
 }
 
 #endif // RCPP_cbbinom_RCPPEXPORTS_H_GEN_

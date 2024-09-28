@@ -6,6 +6,7 @@
 #' on the d-p-q-r families of functions for the commonly-used distributions
 #' in the \code{stats} package. These functions are also available in
 #' \code{\link[Rcpp:Rcpp-package]{Rcpp}} as \code{cbbinom::cpp_*cbbinom()},
+#' and their non-vectorized versions in \code{\link[Rcpp:Rcpp-package]{Rcpp}} as \code{cbbinom::*cbbinom_()},
 #' when using \code{[[Rcpp::depends(cbbinom)]]} and \code{#include <cbbinom.h>}.
 #'
 #' Derived from the continuous binomial distribution (Ilienko 2013), the continuous beta-binomial
