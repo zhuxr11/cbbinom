@@ -1,4 +1,4 @@
-# cbbinom (development version)
+# cbbinom 0.2.0
 
 ## Bug fixes
 
