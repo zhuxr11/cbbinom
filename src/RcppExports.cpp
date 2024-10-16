@@ -295,6 +295,47 @@ RcppExport SEXP _cbbinom_qcbbinom_(SEXP pSEXP, SEXP sizeSEXP, SEXP alphaSEXP, SE
     UNPROTECT(1);
     return rcpp_result_gen;
 }
+// rcbbinom_
+double rcbbinom_(const double& size, const double& alpha, const double& beta, const bool& lower_tail, const bool& log_p, const Nullable<IntegerVector>& prec, double tol, int max_iter);
+static SEXP _cbbinom_rcbbinom__try(SEXP sizeSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP precSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const double& >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< const double& >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type log_p(log_pSEXP);
+    Rcpp::traits::input_parameter< const Nullable<IntegerVector>& >::type prec(precSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcbbinom_(size, alpha, beta, lower_tail, log_p, prec, tol, max_iter));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _cbbinom_rcbbinom_(SEXP sizeSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP, SEXP precSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_cbbinom_rcbbinom__try(sizeSEXP, alphaSEXP, betaSEXP, lower_tailSEXP, log_pSEXP, precSEXP, tolSEXP, max_iterSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
 
 // validate (ensure exported C++ functions exist before calling them)
 static int _cbbinom_RcppExport_validate(const char* sig) { 
@@ -307,6 +348,7 @@ static int _cbbinom_RcppExport_validate(const char* sig) {
         signatures.insert("double(*pcbbinom_)(const double&,const double&,const double&,const double&,const bool&,const bool&,const Nullable<IntegerVector>&)");
         signatures.insert("double(*dcbbinom_)(const double&,const double&,const double&,const double&,const bool&,const Nullable<IntegerVector>&)");
         signatures.insert("double(*qcbbinom_)(double,const double&,const double&,const double&,const bool&,const bool&,const Nullable<IntegerVector>&,double,int)");
+        signatures.insert("double(*rcbbinom_)(const double&,const double&,const double&,const bool&,const bool&,const Nullable<IntegerVector>&,double,int)");
     }
     return signatures.find(sig) != signatures.end();
 }
@@ -320,6 +362,7 @@ RcppExport SEXP _cbbinom_RcppExport_registerCCallable() {
     R_RegisterCCallable("cbbinom", "_cbbinom_pcbbinom_", (DL_FUNC)_cbbinom_pcbbinom__try);
     R_RegisterCCallable("cbbinom", "_cbbinom_dcbbinom_", (DL_FUNC)_cbbinom_dcbbinom__try);
     R_RegisterCCallable("cbbinom", "_cbbinom_qcbbinom_", (DL_FUNC)_cbbinom_qcbbinom__try);
+    R_RegisterCCallable("cbbinom", "_cbbinom_rcbbinom_", (DL_FUNC)_cbbinom_rcbbinom__try);
     R_RegisterCCallable("cbbinom", "_cbbinom_RcppExport_validate", (DL_FUNC)_cbbinom_RcppExport_validate);
     return R_NilValue;
 }
@@ -332,6 +375,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_cbbinom_pcbbinom_", (DL_FUNC) &_cbbinom_pcbbinom_, 7},
     {"_cbbinom_dcbbinom_", (DL_FUNC) &_cbbinom_dcbbinom_, 6},
     {"_cbbinom_qcbbinom_", (DL_FUNC) &_cbbinom_qcbbinom_, 9},
+    {"_cbbinom_rcbbinom_", (DL_FUNC) &_cbbinom_rcbbinom_, 8},
     {"_cbbinom_RcppExport_registerCCallable", (DL_FUNC) &_cbbinom_RcppExport_registerCCallable, 0},
     {NULL, NULL, 0}
 };

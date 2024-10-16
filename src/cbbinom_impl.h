@@ -35,4 +35,15 @@ double qcbbinom_(
     int max_iter
 );
 
+double rcbbinom_(
+    const double& size,
+    const double& alpha,
+    const double& beta,
+    const bool& lower_tail,
+    const bool& log_p,
+    const Nullable<IntegerVector>& prec,
+    double tol,
+    int max_iter
+);
+
 #endif // CBBINOM_IMPL_HEADER_GEN_H

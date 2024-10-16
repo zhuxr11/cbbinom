@@ -247,3 +247,18 @@ double qcbbinom_(
   return cbbinom::cpp_uniroot(0.0, size + 1.0, -p, 1.0 - p,
                               &eqn_obj, &tol, &max_iter);
 }
+
+// [[Rcpp::export]]
+double rcbbinom_(
+    const double& size,
+    const double& alpha,
+    const double& beta,
+    const bool& lower_tail,
+    const bool& log_p,
+    const Nullable<IntegerVector>& prec,
+    double tol,
+    int max_iter
+) {
+  return qcbbinom_(runif(1)(0), size, alpha, beta, true, false,
+                   prec, tol, max_iter);
+}
