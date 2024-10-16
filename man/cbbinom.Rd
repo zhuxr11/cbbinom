@@ -84,13 +84,10 @@ Only the first elements of the logical arguments are used.
 }
 \description{
 Density, distribution function, quantile function and random generation for
-a continuous analog to the beta-binomial distribution with parameters \code{size}
+a continuous analog to the beta-binomial distribution with parameters \code{size},
 \code{alpha} and \code{beta}. The usage and help pages are modeled
 on the d-p-q-r families of functions for the commonly-used distributions
-in the \code{stats} package. These functions are also available in
-\code{\link[Rcpp:Rcpp-package]{Rcpp}} as \code{cbbinom::cpp_*cbbinom()},
-and their non-vectorized versions in \code{\link[Rcpp:Rcpp-package]{Rcpp}} as \code{cbbinom::*cbbinom_()},
-when using \code{[[Rcpp::depends(cbbinom)]]} and \code{#include <cbbinom.h>}.
+in the \code{stats} package.
 }
 \details{
 Derived from the continuous binomial distribution (Ilienko 2013), the continuous beta-binomial
@@ -113,12 +110,17 @@ beta-binomial is \code{[0, size + 1]}, and the mean is approximately
 
 Supplying \code{ncp != 0} moves the support of beta-binomial to \code{[ncp, size + 1 + ncp]}. For example,
 to build a continuous beta-binomial with approximately non-shifted mean, use \code{ncp = -0.5}.
+
+These functions are also available in \code{\link[Rcpp:Rcpp-package]{Rcpp}}
+as \code{cbbinom::cpp_[d/p/q/r]cbbinom()}, and their non-vectorized versions
+in \code{\link[Rcpp:Rcpp-package]{Rcpp}} as \code{cbbinom::[d/p/q/r]cbbinom_()}.
+To use them, please use \code{[[Rcpp::depends(cbbinom)]]} and \code{#include <cbbinom.h>}.
 }
 \note{
 Change log:
 \itemize{
 \item{0.1.0 Xiurui Zhu - Initiate the function.}
-\item{0.2.0 Xiurui Zhu - Re-implement distribution function with \code{BH} package,
+\item{0.2.0 Xiurui Zhu - Re-implement distribution function with \code{\link[BH:BH-package]{BH}} package,
 add \code{NULL} default tolerance, and add precision parameters.}
 }
 }
