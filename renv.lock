@@ -371,19 +371,14 @@
     },
     "hypergeo2": {
       "Package": "hypergeo2",
-      "Version": "0.1.0.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "zhuxr11",
-      "RemoteRepo": "hypergeo2",
-      "RemoteRef": "master",
-      "RemoteSha": "95b04dd2e5156f378925a60c26ee1941bf8cf287",
+      "Version": "0.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
       "Requirements": [
         "BH",
         "Rcpp"
       ],
-      "Hash": "62825724c27a426a819519780c66056d"
+      "Hash": "6f6480cb019e2a95ef2fb0ea3a9f0aa4"
     },
     "isoband": {
       "Package": "isoband",

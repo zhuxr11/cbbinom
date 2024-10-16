@@ -14,9 +14,9 @@ status](https://www.r-pkg.org/badges/version/cbbinom)](https://CRAN.R-project.or
 stats](https://cranlogs.r-pkg.org/badges/grand-total/cbbinom)](https://CRAN.R-project.org/package=cbbinom)
 <!-- badges: end -->
 
-**Package**: [*cbbinom*](https://github.com/zhuxr11/cbbinom)
-0.1.0.9000<br /> **Author**: Xiurui Zhu<br /> **Modified**: 2024-09-18
-23:27:13<br /> **Compiled**: 2024-09-18 23:27:18
+**Package**: [*cbbinom*](https://github.com/zhuxr11/cbbinom) 0.2.0<br />
+**Author**: Xiurui Zhu<br /> **Modified**: 2024-09-18 23:27:13<br />
+**Compiled**: 2024-10-16 23:21:42
 
 The goal of `cbbinom` is to implement continuous beta-binomial
 distribution.
@@ -175,7 +175,7 @@ system.time(pcbbinom_plot_prec20_y <- pcbbinom(
   prec = 20L
 ))
 #>    user  system elapsed 
-#>    1.60    0.00    1.59
+#>    1.57    0.00    1.59
 ```
 
 ``` r
